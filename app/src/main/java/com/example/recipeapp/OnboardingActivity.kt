@@ -1,23 +1,22 @@
 package com.example.recipeapp
 
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.recipeapp.databinding.ActivityMainBinding
+import com.example.recipeapp.databinding.ActivityOnboardingBinding
 
-class MainActivity : AppCompatActivity() {
+class OnboardingActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityOnboardingBinding
     private lateinit var userPreference: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -25,20 +24,21 @@ class MainActivity : AppCompatActivity() {
             insets
         }
         userPreference = getSharedPreferences("UserPreferences", MODE_PRIVATE)
-        setupNavigationFlow()
+        setUpOnboardingComplete()
     }
 
-    private fun setupNavigationFlow() {
-        val onboardingDone = userPreference.getBoolean("onBoardingDone", false)
-        if (onboardingDone) {
-            if (isUserLoggedIn()) {
-                // TODO: user logged in -> go to Home Screen
-            } else {
-                // TODO: user not logged in, hence go to Login screen
+    private fun setUpOnboardingComplete() {
+        binding.apply {
+            btnStartCooking.setOnClickListener {
+                val editor = userPreference.edit()
+                editor.putBoolean("onBoardingDone", true)
+                editor.apply()
+                if (isUserLoggedIn()) {
+                    // TODO: user logged in -> go to Home Screen
+                } else {
+                    // TODO: user not logged in, hence go to Login screen
+                }
             }
-        } else {
-            val intent = Intent(this, OnboardingActivity::class.java)
-            startActivity(intent)
         }
     }
 

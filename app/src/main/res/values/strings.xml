@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">RecipeApp</string>
+    <string name="onboard_subhead">100K+ Premium Recipe</string>
+    <string name="onboard_button">Start Cooking</string>
+    <string name="onboard_tagline">Simple way to find Tasty recipe</string>
+    <string name="onboard_heading">Get Cooking</string>
 </resources>
