@@ -34,11 +34,14 @@ class MainActivity : AppCompatActivity() {
             if (isUserLoggedIn()) {
                 // TODO: user logged in -> go to Home Screen
             } else {
-                // TODO: user not logged in, hence go to Login screen
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         } else {
             val intent = Intent(this, OnboardingActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 

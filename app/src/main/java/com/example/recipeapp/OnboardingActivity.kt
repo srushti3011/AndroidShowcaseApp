@@ -1,5 +1,6 @@
 package com.example.recipeapp
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -36,7 +37,9 @@ class OnboardingActivity : AppCompatActivity() {
                 if (isUserLoggedIn()) {
                     // TODO: user logged in -> go to Home Screen
                 } else {
-                    // TODO: user not logged in, hence go to Login screen
+                    val intent = Intent(this@OnboardingActivity, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
                 }
             }
         }

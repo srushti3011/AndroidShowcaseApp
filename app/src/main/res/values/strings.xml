@@ -4,4 +4,14 @@
     <string name="onboard_button">Start Cooking</string>
     <string name="onboard_tagline">Simple way to find Tasty recipe</string>
     <string name="onboard_heading">Get Cooking</string>
+    <string name="login_hello_heading">Hello,</string>
+    <string name="login_welcome_back_heading">Welcome Back!</string>
+    <string name="email_heading">Email</string>
+    <string name="email_hint">Enter email</string>
+    <string name="password_heading">Password</string>
+    <string name="password_hint">Enter password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_sign_in_button">Sign in</string>
+    <string name="sign_in_option_heading">Or Sign in With</string>
+    <string name="login_go_to_sign_up">Don\'t have an account? Sign up</string>
 </resources>
