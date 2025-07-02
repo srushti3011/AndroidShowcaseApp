@@ -14,4 +14,13 @@
     <string name="login_sign_in_button">Sign in</string>
     <string name="sign_in_option_heading">Or Sign in With</string>
     <string name="login_go_to_sign_up">Don\'t have an account? Sign up</string>
+    <string name="signup_create_account_heading">Create an account</string>
+    <string name="signup_subheading">Let’s help you set up your account,\n it won’t take long.</string>
+    <string name="name_heading">Name</string>
+    <string name="name_hint">Enter Name</string>
+    <string name="confirm_password_heading">Confirm Password</string>
+    <string name="confirm_password_hint">Retype Password</string>
+    <string name="checkbox_accept_terms_conditions"><![CDATA[Accept terms & Condition]]></string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="signup_go_to_login">Already a member? Sign In</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.example.recipeapp
 
-import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.text.SpannableString
@@ -102,8 +102,9 @@ class LoginActivity : AppCompatActivity() {
         val foregroundSpan = ForegroundColorSpan(colorToApply)
         val clickableSpan = object: ClickableSpan() {
             override fun onClick(widget: View) {
-                // TODO: Go to signup and finish current activity
-                Log.i("TAG", "spannable string clicked")
+                val intent = Intent(this@LoginActivity,  SignUpActivity::class.java)
+                startActivity(intent)
+                finish()
             }
 
             override fun updateDrawState(ds: TextPaint) {
