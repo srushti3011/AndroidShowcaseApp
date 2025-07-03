@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isUserLoggedIn(): Boolean {
-        val authKey = userPreference.getString("authKey", "")
-        return authKey != ""
+//        val authKey = userPreference.getString("authKey", "")
+//        return authKey != ""
+        return false
     }
 }

@@ -20,9 +20,15 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.databinding.ActivitySignUpBinding
 import com.example.recipeapp.model.SignupInputDetailEmptyFields
+import com.example.recipeapp.model.ErrorState
+import com.example.recipeapp.model.Idle
+import com.example.recipeapp.model.Loading
 import com.example.recipeapp.model.SignupInputError
+import com.example.recipeapp.model.Success
 import com.example.recipeapp.viewmodel.SignupViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
@@ -96,6 +102,11 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        setupSignupInputDataValidationObserver()
+        setupSignupApiStateObserver()
+    }
+
+    private fun setupSignupInputDataValidationObserver() {
         viewModel.signupInputErrorState.observe(this) {
             when (it) {
                 is SignupInputError.DetailsEmpty -> {
@@ -123,10 +134,6 @@ class SignUpActivity : AppCompatActivity() {
                     binding.etEmail.showError("Email not valid")
                 }
 
-                SignupInputError.NoError -> {
-                    // TODO: call api
-                }
-
                 SignupInputError.PasswordAndConfirmPasswordNotSame -> {
                     binding.etConfirmPassword.showError(
                         "Confirm password should be same as password"
@@ -135,6 +142,48 @@ class SignUpActivity : AppCompatActivity() {
 
                 SignupInputError.TermsAndConditionNotAccepted -> {
                     generateToast("Can't proceed as terms and conditions not accepted")
+                }
+
+                is SignupInputError.NoError -> {
+                }
+            }
+        }
+    }
+
+    private fun setupSignupApiStateObserver() {
+        viewModel.signupApiState.observe(this) {
+            when (it) {
+                is ErrorState -> {
+                    generateToast("Api failed - $it")
+                    binding.btnSignUp.apply {
+                        text = ContextCompat.getString(
+                            this@SignUpActivity,
+                            R.string.sign_up_button
+                        )
+                        isEnabled = true
+                    }
+                }
+                is Idle -> {
+                }
+                is Loading -> {
+                    binding.btnSignUp.apply {
+                        text = ContextCompat.getString(
+                            this@SignUpActivity,
+                            R.string.loading
+                        )
+                        isEnabled = false
+                    }
+                }
+                is Success -> {
+                    generateToast("Signup successful")
+                    binding.btnSignUp.apply {
+                        text = ContextCompat.getString(
+                            this@SignUpActivity,
+                            R.string.sign_up_button
+                        )
+                        isEnabled = true
+                    }
+                    // TODO: Signifies signup successful, store hash in preference and navigate
                 }
             }
         }

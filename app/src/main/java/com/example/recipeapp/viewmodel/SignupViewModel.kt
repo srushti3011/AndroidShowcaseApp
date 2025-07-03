@@ -1,16 +1,38 @@
 package com.example.recipeapp.viewmodel
 
+import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.model.ApiState
+import com.example.recipeapp.model.ErrorState
+import com.example.recipeapp.model.Loading
 import com.example.recipeapp.model.SignupInputDetailEmptyFields
 import com.example.recipeapp.model.SignupInputError
+import com.example.recipeapp.model.Success
+import com.example.recipeapp.network.networkmodel.ConnectUserBody
+import com.example.recipeapp.network.networkmodel.ConnectUserResponse
+import com.example.recipeapp.network.networkrepository.UserRespository
+import com.example.recipeapp.network.onError
+import com.example.recipeapp.network.onException
+import com.example.recipeapp.network.onSuccess
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jakarta.inject.Inject
+import kotlinx.coroutines.launch
 
-class SignupViewModel: ViewModel() {
+@HiltViewModel
+class SignupViewModel @Inject constructor(
+    private val userRepository: UserRespository
+) : ViewModel() {
     private val mSignupInputErrorState = MutableLiveData<SignupInputError>()
     val signupInputErrorState: LiveData<SignupInputError>
         get() = mSignupInputErrorState
+
+    private val mSignupApiState = MutableLiveData<ApiState<ConnectUserResponse>>()
+    val signupApiState: LiveData<ApiState<ConnectUserResponse>>
+        get() = mSignupApiState
 
     fun validateInput(
         name: String,
@@ -44,10 +66,34 @@ class SignupViewModel: ViewModel() {
             mSignupInputErrorState.value = SignupInputError.TermsAndConditionNotAccepted
         } else {
             mSignupInputErrorState.value = SignupInputError.NoError
+            connectUser(name, email)
         }
     }
 
     private fun validateEmail(email: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    fun connectUser(name: String, email: String) {
+        val connectUserBody = ConnectUserBody(
+            username = name,
+            firstName = "defaultFirstName",
+            lastName = "defaultLastName",
+            email = email
+        )
+        viewModelScope.launch {
+            mSignupApiState.value = Loading()
+            userRepository.connectUser(connectUserBody)
+                .onSuccess {
+                    Log.i("TAG", it.toString())
+                    mSignupApiState.value = Success(it)
+                }
+                .onError { code, message ->
+                    mSignupApiState.value = ErrorState("$message with $code")
+                }
+                .onException {
+                    mSignupApiState.value = it.localizedMessage?.let { it1 -> ErrorState(it1) }
+                }
+        }
     }
 }
