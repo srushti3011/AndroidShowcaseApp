@@ -1,5 +1,6 @@
 package com.example.recipeapp
 
+import android.graphics.Color
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -20,9 +21,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.databinding.ActivityLoginBinding
+import com.example.recipeapp.model.ErrorState
+import com.example.recipeapp.model.Idle
+import com.example.recipeapp.model.Loading
 import com.example.recipeapp.model.LoginInputError
+import com.example.recipeapp.model.Success
 import com.example.recipeapp.viewmodel.LoginViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -64,6 +71,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
+        setupInputDataValidationObserver()
+        setupApiStateObserver()
+    }
+
+    private fun setupInputDataValidationObserver() {
         viewModel.loginErrorState.observe(this) {
             Log.i("TAG", it.toString())
             when (it) {
@@ -88,11 +100,71 @@ class LoginActivity : AppCompatActivity() {
                     binding.etPassword.requestFocus()
                 }
 
-                LoginInputError.NoError -> {
-                    // TODO: as no error, make api call
+                is LoginInputError.NoError -> {
+                    viewModel.connectUser(
+                        it.email,
+                        it.password
+                    )
                 }
             }
         }
+    }
+
+    private fun setupApiStateObserver() {
+        viewModel.loginApiState.observe(this) {
+            when (it) {
+                is ErrorState -> {
+                    makeAlert("Api failed") {
+                        binding.btnSignIn.text = ContextCompat.getString(
+                            this,
+                            R.string.login_sign_in_button
+                        )
+                        binding.btnSignIn.isEnabled = true
+                    }
+                }
+
+                is Idle -> {
+                }
+
+                is Loading -> {
+                    binding.btnSignIn.text = ContextCompat.getString(
+                        this,
+                        R.string.loading
+                    )
+                    binding.btnSignIn.isEnabled = false
+                }
+
+                is Success -> {
+                    val userPreference = getSharedPreferences(
+                        "UserPreferences",
+                        MODE_PRIVATE
+                    )
+                    val editor = userPreference.edit()
+                    editor.putString("authKey", it.response.hash)
+                    editor.apply()
+                    makeAlert("Login successful") {
+                        // TODO: After user dismisses the alert box, navigate to home
+                    }
+                    binding.btnSignIn.text = ContextCompat.getString(
+                        this,
+                        R.string.login_sign_in_button
+                    )
+                    binding.btnSignIn.isEnabled = true
+                }
+            }
+        }
+    }
+
+    private fun makeAlert(message: String, onClickButton: () -> Unit) {
+        AlertDialog.Builder(this)
+            .setTitle("Error in input")
+            .setMessage(message)
+            .setNeutralButton("Ok") { dialog, _ ->
+                dialog.cancel()
+                onClickButton()
+            }
+            .create()
+            .show()
     }
 
     private fun setSpannableString() {
@@ -100,9 +172,9 @@ class LoginActivity : AppCompatActivity() {
         val spannableString = SpannableString(binding.tvGoToSignup.text.toString())
         val colorToApply = ContextCompat.getColor(this, R.color.colorTertiary)
         val foregroundSpan = ForegroundColorSpan(colorToApply)
-        val clickableSpan = object: ClickableSpan() {
+        val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                val intent = Intent(this@LoginActivity,  SignUpActivity::class.java)
+                val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
                 startActivity(intent)
                 finish()
             }

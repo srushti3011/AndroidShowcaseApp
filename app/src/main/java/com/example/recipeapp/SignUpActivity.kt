@@ -82,7 +82,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.apply {
             btnSignUp.setOnClickListener {
                 listOf(etName, etEmail, etPassword, etConfirmPassword).forEach {
-                    it.showError("")
+                    it.hideError()
                 }
                 viewModel.validateInput(
                     name = etName.getText(),
