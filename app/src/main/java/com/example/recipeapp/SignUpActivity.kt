@@ -10,6 +10,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -154,8 +155,10 @@ class SignUpActivity : AppCompatActivity() {
         viewModel.signupApiState.observe(this) {
             when (it) {
                 is ErrorState -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
                     generateToast("Api failed - $it")
                     binding.btnSignUp.apply {
+                        revertAnimation()
                         text = ContextCompat.getString(
                             this@SignUpActivity,
                             R.string.sign_up_button
@@ -164,19 +167,24 @@ class SignUpActivity : AppCompatActivity() {
                     }
                 }
                 is Idle -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
                 }
                 is Loading -> {
                     binding.btnSignUp.apply {
+                        startAnimation()
                         text = ContextCompat.getString(
                             this@SignUpActivity,
                             R.string.loading
                         )
                         isEnabled = false
                     }
+                    window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
                 }
                 is Success -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
                     generateToast("Signup successful")
                     binding.btnSignUp.apply {
+                        revertAnimation()
                         text = ContextCompat.getString(
                             this@SignUpActivity,
                             R.string.sign_up_button

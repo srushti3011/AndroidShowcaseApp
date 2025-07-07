@@ -12,6 +12,8 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 import android.view.inputmethod.EditorInfo
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -114,6 +116,8 @@ class LoginActivity : AppCompatActivity() {
         viewModel.loginApiState.observe(this) {
             when (it) {
                 is ErrorState -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
+                    binding.btnSignIn.revertAnimation()
                     makeAlert("Api failed") {
                         binding.btnSignIn.text = ContextCompat.getString(
                             this,
@@ -124,17 +128,22 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 is Idle -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
                 }
 
                 is Loading -> {
+                    binding.btnSignIn.startAnimation()
                     binding.btnSignIn.text = ContextCompat.getString(
                         this,
                         R.string.loading
                     )
                     binding.btnSignIn.isEnabled = false
+                    window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
                 }
 
                 is Success -> {
+                    window.clearFlags(FLAG_NOT_TOUCHABLE)
+                    binding.btnSignIn.revertAnimation()
                     val userPreference = getSharedPreferences(
                         "UserPreferences",
                         MODE_PRIVATE

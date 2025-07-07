@@ -166,7 +166,7 @@
                 android:paddingEnd="0dp"
                 android:buttonTintMode="add" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <io.writeopia.loadingbutton.customViews.CircularProgressButton
                 android:id="@+id/btnSignUp"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
