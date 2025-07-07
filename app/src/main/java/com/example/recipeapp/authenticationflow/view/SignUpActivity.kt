@@ -1,4 +1,4 @@
-package com.example.recipeapp
+package com.example.recipeapp.authenticationflow.view
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,14 +19,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.recipeapp.R
 import com.example.recipeapp.databinding.ActivitySignUpBinding
-import com.example.recipeapp.model.SignupInputDetailEmptyFields
-import com.example.recipeapp.model.ErrorState
-import com.example.recipeapp.model.Idle
-import com.example.recipeapp.model.Loading
-import com.example.recipeapp.model.SignupInputError
-import com.example.recipeapp.model.Success
-import com.example.recipeapp.viewmodel.SignupViewModel
+import com.example.recipeapp.authenticationflow.model.SignupInputDetailEmptyFields
+import com.example.recipeapp.network.ErrorState
+import com.example.recipeapp.network.Idle
+import com.example.recipeapp.network.Loading
+import com.example.recipeapp.authenticationflow.model.SignupInputError
+import com.example.recipeapp.network.Success
+import com.example.recipeapp.authenticationflow.viewmodel.SignupViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -79,7 +80,8 @@ class SignUpActivity : AppCompatActivity() {
                 setImeAction(EditorInfo.IME_ACTION_DONE)
                 setHint(ContextCompat.getString(
                     this@SignUpActivity,
-                    R.string.confirm_password_hint)
+                    R.string.confirm_password_hint
+                )
                 )
             }
         }

@@ -1,4 +1,4 @@
-package com.example.recipeapp.model
+package com.example.recipeapp.authenticationflow.model
 
 sealed class LoginInputError {
     data object NotValidEmail : LoginInputError()

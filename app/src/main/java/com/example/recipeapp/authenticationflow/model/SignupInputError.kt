@@ -1,4 +1,4 @@
-package com.example.recipeapp.model
+package com.example.recipeapp.authenticationflow.model
 
 sealed class SignupInputError {
     data class DetailsEmpty(val emptyFields: MutableList<SignupInputDetailEmptyFields>): SignupInputError()

@@ -1,4 +1,4 @@
-package com.example.recipeapp.viewmodel
+package com.example.recipeapp.authenticationflow.viewmodel
 
 import android.util.Log
 import android.util.Patterns
@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.recipeapp.model.ApiState
-import com.example.recipeapp.model.ErrorState
-import com.example.recipeapp.model.Loading
-import com.example.recipeapp.model.SignupInputDetailEmptyFields
-import com.example.recipeapp.model.SignupInputError
-import com.example.recipeapp.model.Success
+import com.example.recipeapp.network.ApiState
+import com.example.recipeapp.network.ErrorState
+import com.example.recipeapp.network.Loading
+import com.example.recipeapp.authenticationflow.model.SignupInputDetailEmptyFields
+import com.example.recipeapp.authenticationflow.model.SignupInputError
+import com.example.recipeapp.network.Success
 import com.example.recipeapp.network.networkmodel.ConnectUserBody
 import com.example.recipeapp.network.networkmodel.ConnectUserResponse
 import com.example.recipeapp.network.networkrepository.UserRespository

@@ -1,4 +1,4 @@
-package com.example.recipeapp.model
+package com.example.recipeapp.network
 
 sealed interface ApiState<T: Any?>
 class Idle<T: Any?>: ApiState<T>

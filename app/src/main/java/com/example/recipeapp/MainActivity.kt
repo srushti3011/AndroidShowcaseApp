@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.recipeapp.authenticationflow.view.LoginActivity
 import com.example.recipeapp.databinding.ActivityMainBinding
+import com.example.recipeapp.onboardingflow.view.OnboardingActivity
 
 class MainActivity : AppCompatActivity() {
 

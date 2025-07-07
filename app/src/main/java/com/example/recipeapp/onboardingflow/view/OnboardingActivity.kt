@@ -1,13 +1,11 @@
-package com.example.recipeapp
+package com.example.recipeapp.onboardingflow.view
 
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
+import com.example.recipeapp.authenticationflow.view.LoginActivity
 import com.example.recipeapp.databinding.ActivityOnboardingBinding
 
 class OnboardingActivity : AppCompatActivity() {

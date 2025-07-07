@@ -1,6 +1,5 @@
-package com.example.recipeapp
+package com.example.recipeapp.authenticationflow.view
 
-import android.graphics.Color
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -12,7 +11,6 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 import android.view.inputmethod.EditorInfo
 import androidx.activity.enableEdgeToEdge
@@ -22,13 +20,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.recipeapp.R
+import com.example.recipeapp.authenticationflow.model.LoginInputError
 import com.example.recipeapp.databinding.ActivityLoginBinding
-import com.example.recipeapp.model.ErrorState
-import com.example.recipeapp.model.Idle
-import com.example.recipeapp.model.Loading
-import com.example.recipeapp.model.LoginInputError
-import com.example.recipeapp.model.Success
-import com.example.recipeapp.viewmodel.LoginViewModel
+import com.example.recipeapp.network.ErrorState
+import com.example.recipeapp.network.Idle
+import com.example.recipeapp.network.Loading
+import com.example.recipeapp.network.Success
+import com.example.recipeapp.authenticationflow.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
