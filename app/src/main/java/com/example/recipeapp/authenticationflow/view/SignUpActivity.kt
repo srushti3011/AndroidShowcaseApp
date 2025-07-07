@@ -28,13 +28,18 @@ import com.example.recipeapp.network.Loading
 import com.example.recipeapp.authenticationflow.model.SignupInputError
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.authenticationflow.viewmodel.SignupViewModel
+import com.example.recipeapp.navigation.Navigator
+import com.example.recipeapp.navigation.NavigationFlows
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private val viewModel: SignupViewModel by viewModels()
+    @Inject
+    lateinit var navigation: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,10 +83,11 @@ class SignUpActivity : AppCompatActivity() {
                     InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 )
                 setImeAction(EditorInfo.IME_ACTION_DONE)
-                setHint(ContextCompat.getString(
-                    this@SignUpActivity,
-                    R.string.confirm_password_hint
-                )
+                setHint(
+                    ContextCompat.getString(
+                        this@SignUpActivity,
+                        R.string.confirm_password_hint
+                    )
                 )
             }
         }
@@ -118,12 +124,15 @@ class SignUpActivity : AppCompatActivity() {
                             SignupInputDetailEmptyFields.NAME -> {
                                 binding.etName.showError("Name is empty")
                             }
+
                             SignupInputDetailEmptyFields.EMAIL -> {
                                 binding.etEmail.showError("Email is empty")
                             }
+
                             SignupInputDetailEmptyFields.PASSWORD -> {
                                 binding.etPassword.showError("Password is empty")
                             }
+
                             SignupInputDetailEmptyFields.CONFPASSWORD -> {
                                 binding.etConfirmPassword.showError(
                                     "Confirm password is empty"
@@ -168,9 +177,11 @@ class SignUpActivity : AppCompatActivity() {
                         isEnabled = true
                     }
                 }
+
                 is Idle -> {
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
                 }
+
                 is Loading -> {
                     binding.btnSignUp.apply {
                         startAnimation()
@@ -182,6 +193,7 @@ class SignUpActivity : AppCompatActivity() {
                     }
                     window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
                 }
+
                 is Success -> {
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
                     generateToast("Signup successful")
@@ -214,8 +226,7 @@ class SignUpActivity : AppCompatActivity() {
         val foregroundSpan = ForegroundColorSpan(colorToApply)
         val clickSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                val intent = Intent(this@SignUpActivity, LoginActivity::class.java)
-                startActivity(intent)
+                viewModel.logInClicked()
                 finish()
             }
 

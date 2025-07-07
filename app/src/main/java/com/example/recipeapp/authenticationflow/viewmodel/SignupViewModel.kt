@@ -1,5 +1,6 @@
 package com.example.recipeapp.authenticationflow.viewmodel
 
+import android.app.Application
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -11,6 +12,8 @@ import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
 import com.example.recipeapp.authenticationflow.model.SignupInputDetailEmptyFields
 import com.example.recipeapp.authenticationflow.model.SignupInputError
+import com.example.recipeapp.navigation.NavigationFlows
+import com.example.recipeapp.navigation.Navigator
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.network.networkmodel.ConnectUserBody
 import com.example.recipeapp.network.networkmodel.ConnectUserResponse
@@ -24,8 +27,13 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class SignupViewModel @Inject constructor(
-    private val userRepository: UserRespository
+    private val userRepository: UserRespository,
+    private val application: Application
 ) : ViewModel() {
+
+    @Inject
+    lateinit var navigation: Navigator
+
     private val mSignupInputErrorState = MutableLiveData<SignupInputError>()
     val signupInputErrorState: LiveData<SignupInputError>
         get() = mSignupInputErrorState
@@ -95,5 +103,10 @@ class SignupViewModel @Inject constructor(
                     mSignupApiState.value = it.localizedMessage?.let { it1 -> ErrorState(it1) }
                 }
         }
+    }
+
+    fun logInClicked() {
+        val authFlow = NavigationFlows.AuthenticationFlow(navigation)
+        authFlow.ToLogin().navigate(application.applicationContext)
     }
 }

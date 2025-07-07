@@ -28,7 +28,10 @@ import com.example.recipeapp.network.Idle
 import com.example.recipeapp.network.Loading
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.authenticationflow.viewmodel.LoginViewModel
+import com.example.recipeapp.navigation.NavigationFlows
+import com.example.recipeapp.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -165,7 +168,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun makeAlert(message: String, onClickButton: () -> Unit) {
         AlertDialog.Builder(this)
-            .setTitle("Error in input")
+            .setTitle("Alert")
             .setMessage(message)
             .setNeutralButton("Ok") { dialog, _ ->
                 dialog.cancel()
@@ -182,8 +185,7 @@ class LoginActivity : AppCompatActivity() {
         val foregroundSpan = ForegroundColorSpan(colorToApply)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                val intent = Intent(this@LoginActivity, SignUpActivity::class.java)
-                startActivity(intent)
+                viewModel.signUpClicked()
                 finish()
             }
 

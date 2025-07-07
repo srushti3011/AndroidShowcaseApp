@@ -7,11 +7,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.recipeapp.authenticationflow.view.LoginActivity
 import com.example.recipeapp.databinding.ActivityOnboardingBinding
+import com.example.recipeapp.navigation.NavigationFlows
+import com.example.recipeapp.navigation.Navigator
+import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
+@AndroidEntryPoint
 class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingBinding
     private lateinit var userPreference: SharedPreferences
+    @Inject
+    lateinit var navigation: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +38,8 @@ class OnboardingActivity : AppCompatActivity() {
                 if (isUserLoggedIn()) {
                     // TODO: user logged in -> go to Home Screen
                 } else {
-                    val intent = Intent(this@OnboardingActivity, LoginActivity::class.java)
-                    startActivity(intent)
+                    val authFlow = NavigationFlows.AuthenticationFlow(navigation)
+                    authFlow.ToLogin().navigate(this@OnboardingActivity)
                     finish()
                 }
             }

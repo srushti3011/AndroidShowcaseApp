@@ -1,5 +1,6 @@
 package com.example.recipeapp.authenticationflow.viewmodel
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,8 @@ import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
 import com.example.recipeapp.authenticationflow.model.LoginInputError
+import com.example.recipeapp.navigation.NavigationFlows
+import com.example.recipeapp.navigation.Navigator
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.network.networkmodel.ConnectUserBody
 import com.example.recipeapp.network.networkmodel.ConnectUserResponse
@@ -18,13 +21,19 @@ import com.example.recipeapp.network.onError
 import com.example.recipeapp.network.onException
 import com.example.recipeapp.network.onSuccess
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRespository
+    private val userRepository: UserRespository,
+    private val application: Application
 ) : ViewModel() {
+
+    @Inject
+    lateinit var navigation: Navigator
 
     private var mLoginErrorState = MutableLiveData<LoginInputError>()
     val loginErrorState: LiveData<LoginInputError>
@@ -75,5 +84,10 @@ class LoginViewModel @Inject constructor(
                     Log.i("TAG", it.toString())
                 }
         }
+    }
+
+    fun signUpClicked() {
+        val authFlow = NavigationFlows.AuthenticationFlow(navigation)
+        authFlow.ToSignUp().navigate(application.applicationContext)
     }
 }

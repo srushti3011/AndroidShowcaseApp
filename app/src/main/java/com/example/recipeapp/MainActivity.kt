@@ -9,12 +9,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.authenticationflow.view.LoginActivity
 import com.example.recipeapp.databinding.ActivityMainBinding
+import com.example.recipeapp.navigation.NavigationFlows
+import com.example.recipeapp.navigation.Navigator
 import com.example.recipeapp.onboardingflow.view.OnboardingActivity
+import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var userPreference: SharedPreferences
+    @Inject
+    lateinit var navigation: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +43,13 @@ class MainActivity : AppCompatActivity() {
             if (isUserLoggedIn()) {
                 // TODO: user logged in -> go to Home Screen
             } else {
-                val intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+                val authFlow = NavigationFlows.AuthenticationFlow(navigation)
+                authFlow.ToLogin().navigate(this)
                 finish()
             }
         } else {
-            val intent = Intent(this, OnboardingActivity::class.java)
-            startActivity(intent)
+            val onboardingFlow = NavigationFlows.OnBoardingFlow(navigation)
+            onboardingFlow.ToOnboarding().navigate(this@MainActivity)
             finish()
         }
     }
