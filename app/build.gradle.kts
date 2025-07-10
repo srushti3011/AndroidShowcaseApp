@@ -58,4 +58,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.loading.button)
+    implementation(libs.library)
+    implementation(libs.androidx.core.splashscreen)
 }

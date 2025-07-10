@@ -1,6 +1,5 @@
 package com.example.recipeapp.authenticationflow.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.text.SpannableString
@@ -9,10 +8,10 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -21,17 +20,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.R
-import com.example.recipeapp.authenticationflow.model.LoginInputError
+import com.example.recipeapp.authenticationflow.model.ErrorType
+import com.example.recipeapp.authenticationflow.viewmodel.LoginViewModel
 import com.example.recipeapp.databinding.ActivityLoginBinding
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Idle
 import com.example.recipeapp.network.Loading
 import com.example.recipeapp.network.Success
-import com.example.recipeapp.authenticationflow.viewmodel.LoginViewModel
-import com.example.recipeapp.navigation.NavigationFlows
-import com.example.recipeapp.navigation.Navigator
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -49,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        binding.btnSignIn.isIndeterminateProgressMode = true
         setupInputFields()
         setupButtonSignIn()
         setupObservers()
@@ -60,8 +58,8 @@ class LoginActivity : AppCompatActivity() {
             etEmail.setEditTextType(
                 InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
             )
-            etEmail.setHint("Enter email")
-            etPassword.setHint("Enter password")
+            etEmail.setHint(ContextCompat.getString(this@LoginActivity, R.string.email_hint))
+            etPassword.setHint(ContextCompat.getString(this@LoginActivity, R.string.password_hint))
             etPassword.setImeAction(EditorInfo.IME_ACTION_DONE)
         }
     }
@@ -80,46 +78,36 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupInputDataValidationObserver() {
-        viewModel.loginErrorState.observe(this) {
-            Log.i("TAG", it.toString())
-            when (it) {
-                LoginInputError.EmailAndPasswordEmpty -> {
-                    binding.etEmail.showError("Email is empty")
-                    binding.etPassword.showError("Password is empty")
-                    binding.etEmail.requestFocus()
+        viewModel.loginInputError.observe(this) {
+            binding.apply {
+                when (it.emailErrorType) {
+                    is ErrorType.FieldIsEmptyError -> etEmail
+                        .showError((it.emailErrorType as ErrorType.FieldIsEmptyError).message)
+
+                    is ErrorType.ValidationError -> etEmail
+                        .showError((it.emailErrorType as ErrorType.ValidationError).message)
+                    null -> {}
                 }
 
-                LoginInputError.EmailEmpty -> {
-                    binding.etEmail.showError("Email is empty")
-                    binding.etEmail.requestFocus()
-                }
-
-                LoginInputError.NotValidEmail -> {
-                    binding.etEmail.showError("Email is not valid")
-                    binding.etEmail.requestFocus()
-                }
-
-                LoginInputError.PasswordEmpty -> {
-                    binding.etPassword.showError("Password is empty")
-                    binding.etPassword.requestFocus()
-                }
-
-                is LoginInputError.NoError -> {
-                    viewModel.connectUser(
-                        it.email,
-                        it.password
-                    )
+                when (it.passwordErrorType) {
+                    is ErrorType.FieldIsEmptyError -> etPassword
+                        .showError((it.passwordErrorType as ErrorType.FieldIsEmptyError).message)
+                    is ErrorType.ValidationError -> etPassword
+                        .showError((it.passwordErrorType as ErrorType.ValidationError).message)
+                    null -> {}
                 }
             }
         }
     }
 
     private fun setupApiStateObserver() {
+        binding.btnSignIn.progress = 0
         viewModel.loginApiState.observe(this) {
             when (it) {
                 is ErrorState -> {
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
-                    binding.btnSignIn.revertAnimation()
+//                    binding.btnSignIn.revertAnimation()
+                    binding.btnSignIn.progress = -1
                     makeAlert("Api failed") {
                         binding.btnSignIn.text = ContextCompat.getString(
                             this,
@@ -130,32 +118,27 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 is Idle -> {
+                    binding.btnSignIn.progress = 0
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
                 }
 
                 is Loading -> {
-                    binding.btnSignIn.startAnimation()
+//                    binding.btnSignIn.startAnimation()
                     binding.btnSignIn.text = ContextCompat.getString(
                         this,
                         R.string.loading
                     )
+                    binding.btnSignIn.progress = 50
                     binding.btnSignIn.isEnabled = false
                     window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
+                    closeKeyboard()
                 }
 
                 is Success -> {
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
-                    binding.btnSignIn.revertAnimation()
-                    val userPreference = getSharedPreferences(
-                        "UserPreferences",
-                        MODE_PRIVATE
-                    )
-                    val editor = userPreference.edit()
-                    editor.putString("authKey", it.response.hash)
-                    editor.apply()
-                    makeAlert("Login successful") {
-                        // TODO: After user dismisses the alert box, navigate to home
-                    }
+                    binding.btnSignIn.progress = 100
+//                    binding.btnSignIn.revertAnimation()
+                    Snackbar.make(binding.root, "Login successful", Snackbar.LENGTH_LONG).show()
                     binding.btnSignIn.text = ContextCompat.getString(
                         this,
                         R.string.login_sign_in_button
@@ -202,5 +185,13 @@ class LoginActivity : AppCompatActivity() {
             text = spannableString
             movementMethod = LinkMovementMethod.getInstance()
         }
+    }
+
+    private fun closeKeyboard() {
+        (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(
+                currentFocus?.windowToken,
+                0
+            )
     }
 }

@@ -1,15 +1,14 @@
 package com.example.recipeapp.navigation
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
-class NavigatorImpl @Inject constructor(): Navigator {
-    override fun toActivity(context: Context, toActivity: Class<out Activity>) {
-        val intent = Intent(context, toActivity).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
+class NavigatorImpl @Inject constructor(
+    @ApplicationContext private val context: Context
+): Navigator {
+    override fun toActivity(intent: Intent) {
         context.startActivity(intent)
     }
 

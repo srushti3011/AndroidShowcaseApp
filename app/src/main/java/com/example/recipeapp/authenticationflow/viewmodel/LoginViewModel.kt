@@ -1,18 +1,16 @@
 package com.example.recipeapp.authenticationflow.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.authenticationflow.model.LoginInputError
+import com.example.recipeapp.navigation.flow.AuthenticationRoute
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
+import com.example.recipeapp.network.Idle
 import com.example.recipeapp.network.Loading
-import com.example.recipeapp.authenticationflow.model.LoginInputError
-import com.example.recipeapp.navigation.NavigationFlows
-import com.example.recipeapp.navigation.Navigator
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.network.networkmodel.ConnectUserBody
 import com.example.recipeapp.network.networkmodel.ConnectUserResponse
@@ -20,48 +18,37 @@ import com.example.recipeapp.network.networkrepository.UserRespository
 import com.example.recipeapp.network.onError
 import com.example.recipeapp.network.onException
 import com.example.recipeapp.network.onSuccess
+import com.example.recipeapp.preferences.UserPreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ActivityContext
-import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRespository,
-    private val application: Application
+    private val authenticationRoute: AuthenticationRoute,
+    private val userPreferenceManager: UserPreferenceManager
 ) : ViewModel() {
-
-    @Inject
-    lateinit var navigation: Navigator
-
-    private var mLoginErrorState = MutableLiveData<LoginInputError>()
-    val loginErrorState: LiveData<LoginInputError>
-        get() = mLoginErrorState
 
     private var mLoginApiState = MutableLiveData<ApiState<ConnectUserResponse>>()
     val loginApiState: LiveData<ApiState<ConnectUserResponse>>
         get() = mLoginApiState
 
+    private var mLoginInputError = MutableLiveData<LoginInputError>()
+    val loginInputError: LiveData<LoginInputError>
+        get() = mLoginInputError
+
     fun validateInput(email: String, password: String) {
-        if (email.isEmpty() && password.isEmpty()) {
-            mLoginErrorState.value = LoginInputError.EmailAndPasswordEmpty
-        } else if (email.isEmpty()) {
-            mLoginErrorState.value = LoginInputError.EmailEmpty
-        } else if (password.isEmpty()) {
-            mLoginErrorState.value = LoginInputError.PasswordEmpty
-        } else if (!validateEmail(email)) {
-            mLoginErrorState.value = LoginInputError.NotValidEmail
-        } else {
-            mLoginErrorState.value = LoginInputError.NoError(email, password)
+        val error = LoginInputError().validate(email, password)
+        if (!error.errorPresent) {
+            connectUser(email, password)
+            return
         }
+        mLoginInputError.value = error
     }
 
-    private fun validateEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    fun connectUser(email: String, password: String) {
+    private fun connectUser(email: String, password: String) {
         val connectUserBody = ConnectUserBody(
             username = "defaultUserName",
             firstName = "defaultFirstName",
@@ -72,8 +59,12 @@ class LoginViewModel @Inject constructor(
             mLoginApiState.value = Loading()
             userRepository.connectUser(connectUserBody)
                 .onSuccess {
+                    delay(30)
                     mLoginApiState.value = Success(it)
+                    userPreferenceManager.setUserLoggedIn(it.hash)
                     Log.i("TAG", it.toString())
+                    delay(10)
+                    mLoginApiState.value = Idle()
                 }
                 .onError { code, message ->
                     mLoginApiState.value = ErrorState("$message with code $code")
@@ -87,7 +78,6 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signUpClicked() {
-        val authFlow = NavigationFlows.AuthenticationFlow(navigation)
-        authFlow.ToSignUp().navigate(application.applicationContext)
+        authenticationRoute.toSignup()
     }
 }

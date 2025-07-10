@@ -1,6 +1,5 @@
 package com.example.recipeapp.authenticationflow.view
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.text.SpannableString
@@ -12,6 +11,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -20,26 +20,21 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.R
+import com.example.recipeapp.authenticationflow.model.ErrorType
+import com.example.recipeapp.authenticationflow.viewmodel.SignupViewModel
 import com.example.recipeapp.databinding.ActivitySignUpBinding
-import com.example.recipeapp.authenticationflow.model.SignupInputDetailEmptyFields
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Idle
 import com.example.recipeapp.network.Loading
-import com.example.recipeapp.authenticationflow.model.SignupInputError
 import com.example.recipeapp.network.Success
-import com.example.recipeapp.authenticationflow.viewmodel.SignupViewModel
-import com.example.recipeapp.navigation.Navigator
-import com.example.recipeapp.navigation.NavigationFlows
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import jakarta.inject.Inject
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private val viewModel: SignupViewModel by viewModels()
-    @Inject
-    lateinit var navigation: Navigator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,47 +111,62 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun setupSignupInputDataValidationObserver() {
-        viewModel.signupInputErrorState.observe(this) {
-            when (it) {
-                is SignupInputError.DetailsEmpty -> {
-                    it.emptyFields.forEach { it1 ->
-                        when (it1) {
-                            SignupInputDetailEmptyFields.NAME -> {
-                                binding.etName.showError("Name is empty")
-                            }
-
-                            SignupInputDetailEmptyFields.EMAIL -> {
-                                binding.etEmail.showError("Email is empty")
-                            }
-
-                            SignupInputDetailEmptyFields.PASSWORD -> {
-                                binding.etPassword.showError("Password is empty")
-                            }
-
-                            SignupInputDetailEmptyFields.CONFPASSWORD -> {
-                                binding.etConfirmPassword.showError(
-                                    "Confirm password is empty"
-                                )
-                            }
-                        }
+        viewModel.signupInputError.observe(this) {
+            binding.apply {
+                when (it.nameError) {
+                    is ErrorType.FieldIsEmptyError -> {
+                        (it.nameError as ErrorType.FieldIsEmptyError).message
+                            .let { it1 -> etName.showError(it1) }
                     }
+                    is ErrorType.ValidationError -> {
+                        (it.nameError as ErrorType.ValidationError).message
+                            .let { it1 -> etName.showError(it1) }
+                    }
+                    null -> {}
                 }
 
-                SignupInputError.InvalidEmail -> {
-                    binding.etEmail.showError("Email not valid")
+                when (it.emailError) {
+                    is ErrorType.FieldIsEmptyError -> {
+                        (it.emailError as ErrorType.FieldIsEmptyError).message
+                            .let { it1 -> etEmail.showError(it1) }
+                    }
+                    is ErrorType.ValidationError -> {
+                        (it.emailError as ErrorType.ValidationError).message
+                            .let { it1 -> etEmail.showError(it1) }
+                    }
+                    null -> {}
                 }
 
-                SignupInputError.PasswordAndConfirmPasswordNotSame -> {
-                    binding.etConfirmPassword.showError(
-                        "Confirm password should be same as password"
-                    )
+                when (it.passwordError) {
+                    is ErrorType.FieldIsEmptyError -> {
+                        (it.passwordError as ErrorType.FieldIsEmptyError).message
+                            .let { it1 -> etPassword.showError(it1) }
+                    }
+                    is ErrorType.ValidationError -> {
+                        (it.passwordError as ErrorType.ValidationError).message
+                            .let { it1 -> etPassword.showError(it1) }
+                    }
+                    null -> {}
                 }
 
-                SignupInputError.TermsAndConditionNotAccepted -> {
-                    generateToast("Can't proceed as terms and conditions not accepted")
+                when (it.confirmPasswordError) {
+                    is ErrorType.FieldIsEmptyError -> {
+                        (it.confirmPasswordError as ErrorType.FieldIsEmptyError).message
+                            .let { it1 -> etConfirmPassword.showError(it1) }
+                    }
+                    is ErrorType.ValidationError -> {
+                        (it.confirmPasswordError as ErrorType.ValidationError).message
+                            .let { it1 -> etConfirmPassword.showError(it1) }
+                    }
+                    null -> {}
                 }
 
-                is SignupInputError.NoError -> {
+                if (it.conditionCheckedError) {
+                    Snackbar.make(
+                        binding.root,
+                        "Can't proceed without accepting terms and conditions",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("Close") {}.show()
                 }
             }
         }
@@ -191,12 +201,16 @@ class SignUpActivity : AppCompatActivity() {
                         )
                         isEnabled = false
                     }
-                    window.setFlags(FLAG_NOT_TOUCHABLE, FLAG_NOT_TOUCHABLE)
+                    closeKeyboard()
                 }
 
                 is Success -> {
                     window.clearFlags(FLAG_NOT_TOUCHABLE)
-                    generateToast("Signup successful")
+                    Snackbar.make(
+                        binding.root,
+                        "Signup successful",
+                        Snackbar.LENGTH_LONG
+                    ).show()
                     binding.btnSignUp.apply {
                         revertAnimation()
                         text = ContextCompat.getString(
@@ -205,7 +219,6 @@ class SignUpActivity : AppCompatActivity() {
                         )
                         isEnabled = true
                     }
-                    // TODO: Signifies signup successful, store hash in preference and navigate
                 }
             }
         }
@@ -241,5 +254,13 @@ class SignUpActivity : AppCompatActivity() {
             text = spannableString
             movementMethod = LinkMovementMethod.getInstance()
         }
+    }
+
+    private fun closeKeyboard() {
+        (getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(
+                currentFocus?.windowToken,
+                0
+            )
     }
 }

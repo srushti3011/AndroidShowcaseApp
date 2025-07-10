@@ -108,7 +108,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
-            <io.writeopia.loadingbutton.customViews.CircularProgressButton
+<!--            <io.writeopia.loadingbutton.customViews.CircularProgressButton-->
+<!--                android:id="@+id/btnSignIn"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="60dp"-->
+<!--                android:layout_marginStart="30dp"-->
+<!--                android:layout_marginTop="25dp"-->
+<!--                android:layout_marginEnd="30dp"-->
+<!--                android:background="@drawable/app_button_bg"-->
+<!--                android:drawableEnd="@drawable/arrow_forward"-->
+<!--                android:drawablePadding="-120dp"-->
+<!--                android:paddingStart="0dp"-->
+<!--                android:paddingEnd="90dp"-->
+<!--                android:text="@string/login_sign_in_button"-->
+<!--                android:fontFamily="@font/poppins_regular"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textAllCaps="false"-->
+<!--                android:textColor="@color/white"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/tvForgotPassword" />-->
+
+            <com.dd.CircularProgressButton
                 android:id="@+id/btnSignIn"
                 android:layout_width="0dp"
                 android:layout_height="60dp"

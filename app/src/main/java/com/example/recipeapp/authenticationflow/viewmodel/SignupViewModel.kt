@@ -1,19 +1,15 @@
 package com.example.recipeapp.authenticationflow.viewmodel
 
-import android.app.Application
 import android.util.Log
-import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.authenticationflow.model.SignupInputError
+import com.example.recipeapp.navigation.flow.AuthenticationRoute
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
-import com.example.recipeapp.authenticationflow.model.SignupInputDetailEmptyFields
-import com.example.recipeapp.authenticationflow.model.SignupInputError
-import com.example.recipeapp.navigation.NavigationFlows
-import com.example.recipeapp.navigation.Navigator
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.network.networkmodel.ConnectUserBody
 import com.example.recipeapp.network.networkmodel.ConnectUserResponse
@@ -21,6 +17,7 @@ import com.example.recipeapp.network.networkrepository.UserRespository
 import com.example.recipeapp.network.onError
 import com.example.recipeapp.network.onException
 import com.example.recipeapp.network.onSuccess
+import com.example.recipeapp.preferences.UserPreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.launch
@@ -28,19 +25,17 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SignupViewModel @Inject constructor(
     private val userRepository: UserRespository,
-    private val application: Application
+    private val authenticationRoute: AuthenticationRoute,
+    private val userPreferenceManager: UserPreferenceManager
 ) : ViewModel() {
-
-    @Inject
-    lateinit var navigation: Navigator
-
-    private val mSignupInputErrorState = MutableLiveData<SignupInputError>()
-    val signupInputErrorState: LiveData<SignupInputError>
-        get() = mSignupInputErrorState
 
     private val mSignupApiState = MutableLiveData<ApiState<ConnectUserResponse>>()
     val signupApiState: LiveData<ApiState<ConnectUserResponse>>
         get() = mSignupApiState
+
+    private val mSignupInputError = MutableLiveData<SignupInputError>()
+    val signupInputError: LiveData<SignupInputError>
+        get() = mSignupInputError
 
     fun validateInput(
         name: String,
@@ -49,40 +44,21 @@ class SignupViewModel @Inject constructor(
         confirmPassword: String,
         conditionsAccepted: Boolean
     ) {
-        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            val emptyError = SignupInputError.DetailsEmpty(mutableListOf())
-            emptyError.emptyFields.apply {
-                if (name.isEmpty()) {
-                    add(SignupInputDetailEmptyFields.NAME)
-                }
-                if (email.isEmpty()) {
-                    add(SignupInputDetailEmptyFields.EMAIL)
-                }
-                if (password.isEmpty()) {
-                    add(SignupInputDetailEmptyFields.PASSWORD)
-                }
-                if (confirmPassword.isEmpty()) {
-                    add(SignupInputDetailEmptyFields.CONFPASSWORD)
-                }
-            }
-            mSignupInputErrorState.value = emptyError
-        } else if (password != confirmPassword) {
-            mSignupInputErrorState.value = SignupInputError.PasswordAndConfirmPasswordNotSame
-        } else if (!validateEmail(email)) {
-            mSignupInputErrorState.value = SignupInputError.InvalidEmail
-        } else if (!conditionsAccepted) {
-            mSignupInputErrorState.value = SignupInputError.TermsAndConditionNotAccepted
-        } else {
-            mSignupInputErrorState.value = SignupInputError.NoError
+        val errors = SignupInputError().validate(
+            name = name,
+            email = email,
+            password = password,
+            confirmPassword = confirmPassword,
+            conditionChecked = conditionsAccepted,
+        )
+        if (!errors.errorPresent) {
             connectUser(name, email)
+            return
         }
+        mSignupInputError.value = errors
     }
 
-    private fun validateEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    }
-
-    fun connectUser(name: String, email: String) {
+    private fun connectUser(name: String, email: String) {
         val connectUserBody = ConnectUserBody(
             username = name,
             firstName = "defaultFirstName",
@@ -94,6 +70,7 @@ class SignupViewModel @Inject constructor(
             userRepository.connectUser(connectUserBody)
                 .onSuccess {
                     Log.i("TAG", it.toString())
+                    userPreferenceManager.setUserLoggedIn(it.hash)
                     mSignupApiState.value = Success(it)
                 }
                 .onError { code, message ->
@@ -106,7 +83,6 @@ class SignupViewModel @Inject constructor(
     }
 
     fun logInClicked() {
-        val authFlow = NavigationFlows.AuthenticationFlow(navigation)
-        authFlow.ToLogin().navigate(application.applicationContext)
+        authenticationRoute.toLogin()
     }
 }
