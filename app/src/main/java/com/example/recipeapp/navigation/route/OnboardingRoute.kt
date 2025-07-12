@@ -1,7 +1,7 @@
 package com.example.recipeapp.navigation.route
 
-import android.app.Activity
+import com.example.recipeapp.FinishableActivity
 
 interface OnboardingRoute {
-    fun toOnboarding(activity: Activity)
+    fun toOnboarding(activity: FinishableActivity)
 }
