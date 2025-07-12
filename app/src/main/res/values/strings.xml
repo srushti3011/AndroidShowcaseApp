@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">RecipeApp</string>
+    <string name="onboard_subhead">100K+ Premium Recipe</string>
+    <string name="onboard_button">Start Cooking</string>
+    <string name="onboard_tagline">Simple way to find Tasty recipe</string>
+    <string name="onboard_heading">Get Cooking</string>
+    <string name="login_hello_heading">Hello,</string>
+    <string name="login_welcome_back_heading">Welcome Back!</string>
+    <string name="email_heading">Email</string>
+    <string name="email_hint">Enter email</string>
+    <string name="password_heading">Password</string>
+    <string name="password_hint">Enter password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login_sign_in_button">Sign in</string>
+    <string name="sign_in_option_heading">Or Sign in With</string>
+    <string name="login_go_to_sign_up">Don\'t have an account? Sign up</string>
+    <string name="signup_create_account_heading">Create an account</string>
+    <string name="signup_subheading">Let’s help you set up your account,\n it won’t take long.</string>
+    <string name="name_heading">Name</string>
+    <string name="name_hint">Enter Name</string>
+    <string name="confirm_password_heading">Confirm Password</string>
+    <string name="confirm_password_hint">Retype Password</string>
+    <string name="checkbox_accept_terms_conditions"><![CDATA[Accept terms & Condition]]></string>
+    <string name="sign_up_button">Sign Up</string>
+    <string name="signup_go_to_login">Already a member? Sign In</string>
+    <string name="loading">Loading</string>
 </resources>
