@@ -1,8 +1,8 @@
 package com.example.recipeapp.navigation.route
 
-import android.app.Activity
+import com.example.recipeapp.FinishableActivity
 
 interface AuthenticationRoute {
-    fun toLogin(activity: Activity)
-    fun toSignup(activity: Activity)
+    fun toLogin(activity: FinishableActivity)
+    fun toSignup(activity: FinishableActivity)
 }
