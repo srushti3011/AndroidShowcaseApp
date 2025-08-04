@@ -24,4 +24,18 @@
     <string name="sign_up_button">Sign Up</string>
     <string name="signup_go_to_login">Already a member? Sign In</string>
     <string name="loading">Loading</string>
+    <string name="home_screen_heading">Hello Jega</string>
+    <string name="home_screen_subheading">What are you cooking today?</string>
+    <string name="content_desc_home_avatar">Avatar image</string>
+    <string name="home_new_recipes_heading">New Recipes</string>
+    <string name="sample_cuisine_name">Indian</string>
+    <string name="sample_recipe_name">Classic Greek Salad</string>
+    <string name="head_time">Time</string>
+    <string name="sample_time_value">15 mins</string>
+    <string name="content_desc_recipe_image">Recipe Image</string>
+    <string name="sample_rating_value">4.5</string>
+    <string name="content_desc_recipe_rating">Rating</string>
+    <string name="content_desc_save_recipe">Save recipe</string>
+    <string name="sample_new_recipe_name">Steak with tomato sauce and bulgur rice.</string>
+    <string name="sample_person_name">By James Milner</string>
 </resources>
