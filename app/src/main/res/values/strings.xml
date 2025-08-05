@@ -38,4 +38,5 @@
     <string name="content_desc_save_recipe">Save recipe</string>
     <string name="sample_new_recipe_name">Steak with tomato sauce and bulgur rice.</string>
     <string name="sample_person_name">By James Milner</string>
+    <string name="sample_content_desc">Content description</string>
 </resources>

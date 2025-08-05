@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -144,6 +143,7 @@ class LoginActivity : BaseActivity() {
                             it1.setText("")
                         }
                     }
+                    viewModel.loginDone(this)
                 }
             }
         }

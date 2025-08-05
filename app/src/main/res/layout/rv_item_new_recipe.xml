@@ -2,13 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="251dp"
     android:layout_height="127dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="5dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="95dp"
         android:layout_gravity="bottom"
-        app:cardCornerRadius="10dp">
+        app:cardCornerRadius="10dp"
+        android:elevation="4dp"
+        app:cardUseCompatPadding="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -17,6 +18,7 @@
             android:layout_marginEnd="11dp"
             android:gravity="center_vertical">
             <TextView
+                android:id="@+id/tvRecipeName"
                 android:layout_width="139dp"
                 android:layout_height="wrap_content"
                 android:text="@string/sample_new_recipe_name"
@@ -27,7 +29,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/new_recipe_rating"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:contentDescription="@string/sample_content_desc"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -35,8 +38,10 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/sample_person" />
+                    android:src="@drawable/sample_person"
+                    android:contentDescription="@string/sample_content_desc"/>
                 <TextView
+                    android:id="@+id/tvSourceName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample_person_name"
@@ -52,8 +57,10 @@
                     android:layout_width="17dp"
                     android:layout_height="17dp"
                     android:src="@drawable/timer"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/sample_content_desc"/>
                 <TextView
+                    android:id="@+id/tvPreparationTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/sample_time_value"
@@ -65,10 +72,12 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <ImageView
+        android:id="@+id/imgRecipe"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_gravity="end"
         android:layout_marginEnd="15dp"
         android:src="@drawable/sample_recipe"
-        android:elevation="10dp"/>
+        android:elevation="10dp"
+        android:contentDescription="@string/sample_content_desc"/>
 </FrameLayout>

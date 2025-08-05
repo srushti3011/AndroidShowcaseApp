@@ -2,6 +2,8 @@ package com.example.recipeapp.navigation
 
 import com.example.recipeapp.navigation.route.AuthenticationRoute
 import com.example.recipeapp.navigation.route.AuthenticationRouteImpl
+import com.example.recipeapp.navigation.route.HomeRoute
+import com.example.recipeapp.navigation.route.HomeRouteImpl
 import com.example.recipeapp.navigation.route.OnboardingRoute
 import com.example.recipeapp.navigation.route.OnboardingRouteImpl
 import dagger.Binds
@@ -18,4 +20,7 @@ interface RouteModule {
 
     @Binds
     fun bindAuthenticationRoute(impl: AuthenticationRouteImpl): AuthenticationRoute
+
+    @Binds
+    fun bindHomeRoute(impl: HomeRouteImpl): HomeRoute
 }

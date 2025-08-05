@@ -1,6 +1,5 @@
 package com.example.recipeapp.authenticationflow.viewmodel
 
-import android.app.Activity
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -11,6 +10,7 @@ import com.example.recipeapp.FinishableActivity
 import com.example.recipeapp.authenticationflow.model.ErrorType
 import com.example.recipeapp.authenticationflow.model.LoginInputError
 import com.example.recipeapp.navigation.route.AuthenticationRoute
+import com.example.recipeapp.navigation.route.HomeRoute
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
@@ -31,7 +31,8 @@ import kotlinx.coroutines.launch
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRespository,
     private val authenticationRoute: AuthenticationRoute,
-    private val userPreferenceManager: UserPreferenceManager
+    private val userPreferenceManager: UserPreferenceManager,
+    private val homeRoute: HomeRoute
 ) : ViewModel() {
 
     private var mLoginApiState = MutableLiveData<ApiState<ConnectUserResponse>>()
@@ -91,5 +92,9 @@ class LoginViewModel @Inject constructor(
 
     fun signUpClicked(activity: FinishableActivity) {
         authenticationRoute.toSignup(activity)
+    }
+
+    fun loginDone(activity: FinishableActivity) {
+        homeRoute.toHome(activity)
     }
 }
