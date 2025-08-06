@@ -60,7 +60,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCuisines"
         android:layout_width="match_parent"
-        android:layout_height="51dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.06"
         app:layout_constraintTop_toBottomOf="@+id/greetingAndSearchContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -70,6 +71,7 @@
         android:id="@+id/rvRecipesPerCuisine"
         android:layout_width="match_parent"
         android:layout_height="231dp"
+        app:layout_constraintHeight_percent="0.28"
         app:layout_constraintTop_toBottomOf="@id/rvCuisines"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,13 +90,16 @@
         android:text="@string/home_new_recipes_heading"
         android:textSize="16sp"
         android:fontFamily="@font/poppins_bold"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvNewRecipes"
         android:layout_width="match_parent"
-        android:layout_height="139dp"
-        app:layout_constraintTop_toBottomOf="@id/tvNewRecipesHeading"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="0dp"
         android:layout_marginTop="5dp"
-        tools:listitem="@layout/rv_item_new_recipe"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.17"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvNewRecipesHeading"
+        tools:listitem="@layout/rv_item_new_recipe" />
 </androidx.constraintlayout.widget.ConstraintLayout>
