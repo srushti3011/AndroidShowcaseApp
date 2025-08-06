@@ -3,69 +3,27 @@ package com.example.recipeapp.homeflow.view
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.recipeapp.BaseActivity
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.ActivityHomeBinding
-import com.example.recipeapp.homeflow.model.Cuisine
-import com.example.recipeapp.homeflow.model.NewRecipe
-import com.example.recipeapp.homeflow.model.RecipePerCuisine
+import com.example.recipeapp.homeflow.viewmodel.HomeViewModel
+import com.example.recipeapp.network.ErrorState
+import com.example.recipeapp.network.Idle
+import com.example.recipeapp.network.Loading
+import com.example.recipeapp.network.Success
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeActivity : BaseActivity() {
 
+    private val viewModel: HomeViewModel by viewModels()
     private lateinit var binding: ActivityHomeBinding
-    private val cuisines = arrayOf(
-        Cuisine(
-            name = "Indian",
-            isSelected = true
-        ),
-        Cuisine(
-            name = "Italian",
-            isSelected = false
-        ),
-        Cuisine(
-            name = "Japanese",
-            isSelected = false
-        ),
-        Cuisine(
-            name = "Thai",
-            isSelected = false
-        ),
-        Cuisine(
-            name = "Mexican",
-            isSelected = false
-        )
-    )
-
-    private val tempRecipes = arrayOf(
-        RecipePerCuisine(
-            id = 12,
-            title = "Recipe One",
-            image = ""
-        ),
-        RecipePerCuisine(
-            id = 14,
-            title = "Recipe One",
-            image = ""
-        ),
-        RecipePerCuisine(
-            id = 13,
-            title = "Recipe One",
-            image = ""
-        ),
-        RecipePerCuisine(
-            id = 20,
-            title = "Recipe One",
-            image = ""
-        ),
-        RecipePerCuisine(
-            id = 22,
-            title = "Recipe One",
-            image = ""
-        )
-    )
+    private val recipePerCuisineAdapter = RecipePerCuisineAdapter()
+    private val newRecipeAdapter = NewRecipeAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +36,8 @@ class HomeActivity : BaseActivity() {
             insets
         }
         setupUI()
+        setupObservers()
+        makeInitialApiCall()
     }
 
     private fun setupUI() {
@@ -86,55 +46,13 @@ class HomeActivity : BaseActivity() {
         setupNewRecipesRecyclerView()
     }
 
-    private fun setupNewRecipesRecyclerView() {
-        val newRecipeAdapter = NewRecipeAdapter(
-            arrayOf(
-                NewRecipe(
-                    id = 1,
-                    image = "",
-                    title = "RecipeOne",
-                    readyInMinutes = 20,
-                    sourceName = "source 1"
-                ),
-                NewRecipe(
-                    id = 1,
-                    image = "",
-                    title = "RecipeOne",
-                    readyInMinutes = 20,
-                    sourceName = "source 1"
-                ),
-                NewRecipe(
-                    id = 1,
-                    image = "",
-                    title = "RecipeOne",
-                    readyInMinutes = 20,
-                    sourceName = "source 1"
-                ),
-                NewRecipe(
-                    id = 1,
-                    image = "",
-                    title = "RecipeOne",
-                    readyInMinutes = 20,
-                    sourceName = "source 1"
-                )
-            )
-        )
-        binding.apply {
-            rvNewRecipes.adapter = newRecipeAdapter
-            rvNewRecipes.layoutManager = LinearLayoutManager(
-                this@HomeActivity,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-        }
-    }
-
     private fun setupCuisineRecyclerView() {
         val cuisineAdapter = CuisineAdapter(
-            cuisines = cuisines
-        ) { cuisine ->
-            Log.i("TAG", "Making call to $cuisine")
-        }
+                cuisines = viewModel.cuisines
+            ) { cuisine ->
+                viewModel.recipeCuisineSet(cuisine)
+            }
+
         binding.apply {
             rvCuisines.adapter = cuisineAdapter
             rvCuisines.layoutManager = LinearLayoutManager(
@@ -146,8 +64,8 @@ class HomeActivity : BaseActivity() {
     }
 
     private fun setupRecipePerCuisineRecyclerView() {
-        val recipePerCuisineAdapter = RecipePerCuisineAdapter(tempRecipes)
         binding.apply {
+            recipePerCuisineAdapter.changeData(listOf())
             rvRecipesPerCuisine.adapter = recipePerCuisineAdapter
             rvRecipesPerCuisine.layoutManager = LinearLayoutManager(
                 this@HomeActivity,
@@ -155,5 +73,62 @@ class HomeActivity : BaseActivity() {
                 false
             )
         }
+    }
+
+    private fun setupNewRecipesRecyclerView() {
+        binding.apply {
+            newRecipeAdapter.changeData(listOf())
+            rvNewRecipes.adapter = newRecipeAdapter
+            rvNewRecipes.layoutManager = LinearLayoutManager(
+                this@HomeActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.recipePerCuisineApiState.observe(this) {
+            when (it) {
+                is ErrorState -> {
+                    Log.i("TAG", it.toString())
+                }
+                is Idle -> {}
+                is Loading -> {
+                    Log.i("TAG", "Loading")
+                }
+                is Success -> {
+                    Log.i("TAG", "Success")
+                }
+            }
+        }
+
+        viewModel.recipePerCuisineData.observe(this) {
+            recipePerCuisineAdapter.changeData(it)
+        }
+
+        viewModel.newRecipeApiState.observe(this) {
+            when (it) {
+                is ErrorState -> {
+                    Log.i("TAG", it.toString())
+                }
+                is Idle -> {}
+                is Loading -> {
+                    Log.i("TAG", "Loading")
+                }
+                is Success -> {
+                    Log.i("TAG", "Success")
+                }
+            }
+        }
+
+        viewModel.newRecipeData.observe(this) {
+            newRecipeAdapter.changeData(it)
+        }
+    }
+
+    private fun makeInitialApiCall() {
+        viewModel.recipeCuisineSet("Indian")
+        viewModel.getNewRecipes(10)
     }
 }
