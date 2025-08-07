@@ -13,6 +13,8 @@ class CuisineAdapter(
     private val makeCall: (String) -> Unit
 ): RecyclerView.Adapter<CuisineAdapter.ViewHolder>() {
 
+    var selectedCuisine = ""
+
     class ViewHolder(
         private val binding: RvItemCuisinesBinding,
     ): RecyclerView.ViewHolder(binding.root) {
@@ -58,6 +60,7 @@ class CuisineAdapter(
             val prevSelected = cuisines.indexOfFirst { it.isSelected }
             cuisines[prevSelected].isSelected = false
             cuisines[position].isSelected = true
+            selectedCuisine = cuisines[position].name
             notifyItemChanged(prevSelected)
             notifyItemChanged(position)
             makeCall(cuisines[position].name)

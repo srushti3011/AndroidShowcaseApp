@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.recipeapp.databinding.RvItemRecipePerCuisineBinding
 import com.example.recipeapp.homeflow.model.RecipePerCuisine
 
@@ -16,6 +17,7 @@ class RecipePerCuisineAdapter: RecyclerView.Adapter<RecipePerCuisineAdapter.View
         fun bind(recipe: RecipePerCuisine) {
             binding.apply {
                 tvRecipeName.text = recipe.title
+                Glide.with(binding.root.context).load(recipe.image).into(binding.imgRecipe)
             }
         }
     }

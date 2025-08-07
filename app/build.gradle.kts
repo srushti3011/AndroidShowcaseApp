@@ -60,4 +60,5 @@ dependencies {
     implementation(libs.loading.button)
     implementation(libs.library)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.glide)
 }

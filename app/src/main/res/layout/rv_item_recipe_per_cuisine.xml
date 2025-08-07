@@ -16,27 +16,35 @@
             android:layout_height="176dp"
             android:background="@drawable/bg_recipe_card"
             android:layout_gravity="bottom"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="15dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="15dp">
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="110dp"
                 android:layout_gravity="center">
-                <ImageView
-                    android:id="@+id/imgRecipe"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/content_desc_recipe_image"
-                    android:src="@drawable/sample_recipe"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:cardCornerRadius="50dp"
+                    app:cardElevation="0dp"
+                    android:layout_gravity="center"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="false">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgRecipe"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/sample_recipe"
+                        android:contentDescription="@string/content_desc_recipe_image" />
+                </androidx.cardview.widget.CardView>
                 <LinearLayout
                     android:layout_width="45dp"
                     android:layout_height="23dp"
@@ -46,13 +54,13 @@
                     android:layout_marginBottom="20dp"
                     android:layout_marginStart="40dp"
                     android:background="@drawable/bg_rating_container">
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:contentDescription="@string/content_desc_recipe_rating"
                         android:src="@drawable/rating_star" />
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="@string/sample_rating_value"
@@ -61,7 +69,7 @@
                         android:layout_gravity="center_vertical" />
                 </LinearLayout>
             </FrameLayout>
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvRecipeName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -91,7 +99,7 @@
                         android:fontFamily="@font/poppins_regular"
                         android:textColor="@color/recipeCardTextGray"
                         android:textSize="11sp"/>
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sample_time_value"
@@ -102,7 +110,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1" />
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:contentDescription="@string/content_desc_save_recipe"

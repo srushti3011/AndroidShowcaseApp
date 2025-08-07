@@ -27,13 +27,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/home_screen_heading"
                     android:textSize="20sp"
                     android:fontFamily="@font/poppins_bold" />
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
@@ -44,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
@@ -67,39 +67,108 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="15dp"
         tools:listitem="@layout/rv_item_cuisines" />
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRecipesPerCuisine"
+    <FrameLayout
+        android:id="@+id/flRecipesPerCuisines"
         android:layout_width="match_parent"
-        android:layout_height="231dp"
+        android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.28"
         app:layout_constraintTop_toBottomOf="@id/rvCuisines"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="15dp"
-        tools:listitem="@layout/rv_item_recipe_per_cuisine"/>
-    <TextView
+        android:layout_marginTop="15dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRecipesPerCuisine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/rv_item_recipe_per_cuisine"/>
+        <View
+            android:id="@+id/viewRecipePerCuisineLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutRecipePerCuisineFailed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorSecondary">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/viewRecipePerCuisineFailed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/btnRecipePerCuisineTryAgain"
+                android:text="Failed to load recipes"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:layout_marginTop="50dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnRecipePerCuisineTryAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try again"
+                android:layout_marginTop="10dp"
+                android:background="@color/recipeCardTextGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewRecipePerCuisineFailed" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvNewRecipesHeading"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginEnd="30dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@+id/rvRecipesPerCuisine"
+        app:layout_constraintTop_toBottomOf="@+id/flRecipesPerCuisines"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/home_new_recipes_heading"
         android:textSize="16sp"
         android:fontFamily="@font/poppins_bold"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNewRecipes"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.17"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvNewRecipesHeading"
-        tools:listitem="@layout/rv_item_new_recipe" />
+        android:layout_marginTop="5dp">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvNewRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/rv_item_new_recipe" />
+        <View
+            android:id="@+id/viewNewRecipesLoading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutNewRecipesFailed"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorSecondary">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/viewNewRecipeFailed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Failed to load recipes"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnNewRecipeTryAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Try again"
+                android:layout_marginTop="10dp"
+                android:background="@color/recipeCardTextGray"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewNewRecipeFailed" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
