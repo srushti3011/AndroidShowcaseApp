@@ -1,6 +1,7 @@
 package com.example.recipeapp.homeflow.view
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
@@ -8,16 +9,46 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeapp.databinding.RvItemRecipePerCuisineBinding
 import com.example.recipeapp.homeflow.model.RecipePerCuisine
+import com.example.recipeapp.util.helpers.RecyclerViewState
+import com.example.recipeapp.util.helpers.ShimmerManager
 
-class RecipePerCuisineAdapter: RecyclerView.Adapter<RecipePerCuisineAdapter.ViewHolder>() {
+class RecipePerCuisineAdapter : RecyclerView.Adapter<RecipePerCuisineAdapter.ViewHolder>() {
 
-    class ViewHolder(
+    private val dummyLoadingList = listOf(
+        RecipePerCuisine(
+            id = 1,
+            title = "sample",
+            image = "sample",
+            isLoading = true
+        ),
+        RecipePerCuisine(
+            id = 2,
+            title = "sample",
+            image = "sample",
+            isLoading = true
+        ),
+        RecipePerCuisine(
+            id = 3,
+            title = "sample",
+            image = "sample",
+            isLoading = true
+        )
+    )
+
+    inner class ViewHolder(
         private val binding: RvItemRecipePerCuisineBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(recipe: RecipePerCuisine) {
-            binding.apply {
-                tvRecipeName.text = recipe.title
-                Glide.with(binding.root.context).load(recipe.image).into(binding.imgRecipe)
+            if (recipe.isLoading) {
+                ShimmerManager.applyShimmerEffect(binding.viewLoadingShimmer)
+                binding.viewLoadingShimmer.visibility = View.VISIBLE
+            } else {
+                binding.viewLoadingShimmer.visibility = View.GONE
+                binding.tvRecipeName.text = recipe.title
+                Glide
+                    .with(binding.root.context)
+                    .load(recipe.image)
+                    .into(binding.imgRecipe)
             }
         }
     }
@@ -36,8 +67,16 @@ class RecipePerCuisineAdapter: RecyclerView.Adapter<RecipePerCuisineAdapter.View
 
     private val asyncListDiffer = AsyncListDiffer(this, diffUtil)
 
-    fun changeData(newRecipes: List<RecipePerCuisine>) {
-        asyncListDiffer.submitList(newRecipes)
+    fun changeData(state: RecyclerViewState<RecipePerCuisine>) {
+        when (state) {
+            is RecyclerViewState.Loading -> {
+                asyncListDiffer.submitList(dummyLoadingList)
+            }
+
+            is RecyclerViewState.Success -> {
+                asyncListDiffer.submitList(state.data)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

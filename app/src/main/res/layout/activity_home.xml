@@ -53,9 +53,11 @@
                 android:background="@drawable/bg_avatar_image" />
         </LinearLayout>
         <SearchView
+            android:id="@+id/searchViewRecipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"/>
+            android:layout_marginTop="30dp"
+            android:background="@drawable/border_search_view"/>
     </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvCuisines"
@@ -81,21 +83,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/rv_item_recipe_per_cuisine"/>
-        <View
-            android:id="@+id/viewRecipePerCuisineLoading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutRecipePerCuisineFailed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorSecondary">
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/viewRecipePerCuisineFailed"
+                android:id="@+id/textViewRecipePerCuisineFailed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toTopOf="@+id/btnRecipePerCuisineTryAgain"
-                android:text="Failed to load recipes"
+                android:text="@string/failed_to_load_recipes"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:layout_marginTop="50dp"
@@ -106,12 +104,12 @@
                 android:id="@+id/btnRecipePerCuisineTryAgain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Try again"
+                android:text="@string/recipe_fetch_try_again"
                 android:layout_marginTop="10dp"
                 android:background="@color/recipeCardTextGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewRecipePerCuisineFailed" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewRecipePerCuisineFailed" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
     <androidx.appcompat.widget.AppCompatTextView
@@ -140,20 +138,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/rv_item_new_recipe" />
-        <View
-            android:id="@+id/viewNewRecipesLoading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutNewRecipesFailed"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorSecondary">
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/viewNewRecipeFailed"
+                android:id="@+id/textViewNewRecipeFailed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Failed to load recipes"
+                android:text="@string/failed_to_load_recipes"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -163,12 +157,12 @@
                 android:id="@+id/btnNewRecipeTryAgain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Try again"
+                android:text="@string/recipe_fetch_try_again"
                 android:layout_marginTop="10dp"
                 android:background="@color/recipeCardTextGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewNewRecipeFailed" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewNewRecipeFailed" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

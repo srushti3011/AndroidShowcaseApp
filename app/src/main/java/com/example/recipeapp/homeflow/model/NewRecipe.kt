@@ -5,5 +5,6 @@ data class NewRecipe(
     val image: String,
     val title: String,
     val readyInMinutes: Int,
-    val sourceName: String
+    val sourceName: String,
+    var isLoading: Boolean
 )

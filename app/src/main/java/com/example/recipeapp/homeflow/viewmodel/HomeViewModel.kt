@@ -97,7 +97,8 @@ class HomeViewModel @Inject constructor(
              val recipePerCuisineToBeAdded = RecipePerCuisine(
                  id = it.id,
                  title = it.title,
-                 image = it.image
+                 image = it.image,
+                 isLoading = false
              )
              recipePerCuisineUIList.add(recipePerCuisineToBeAdded)
          }
@@ -133,7 +134,8 @@ class HomeViewModel @Inject constructor(
                 image = it.image,
                 title = it.title,
                 readyInMinutes = it.readyInMinutes,
-                sourceName = it.sourceName
+                sourceName = it.sourceName,
+                isLoading = false
             )
             newRecipeUIList.add(newRecipeToBeAdded)
         }
