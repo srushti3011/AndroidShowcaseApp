@@ -16,6 +16,9 @@
         android:theme="@style/Theme.RecipeApp"
         tools:targetApi="31">
         <activity
+            android:name=".bottomnavigationflow.view.BottomNavigationActivity"
+            android:exported="false" />
+        <activity
             android:name=".homeflow.view.HomeActivity"
             android:exported="false" />
         <activity

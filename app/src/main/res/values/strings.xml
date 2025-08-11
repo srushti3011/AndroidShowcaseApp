@@ -41,4 +41,9 @@
     <string name="sample_content_desc">Content description</string>
     <string name="failed_to_load_recipes">Failed to load recipes</string>
     <string name="recipe_fetch_try_again">Try again</string>
+    <string name="bottom_nav_home_title">Home</string>
+    <string name="bottom_nav_save_title">Save</string>
+    <string name="bottom_nav_notification_title">Notification</string>
+    <string name="bottom_nav_profile_title">Notification</string>
+    <string name="implementation_in_progress">In progress</string>
 </resources>
