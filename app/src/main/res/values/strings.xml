@@ -44,6 +44,6 @@
     <string name="bottom_nav_home_title">Home</string>
     <string name="bottom_nav_save_title">Save</string>
     <string name="bottom_nav_notification_title">Notification</string>
-    <string name="bottom_nav_profile_title">Notification</string>
+    <string name="bottom_nav_profile_title">Profile</string>
     <string name="implementation_in_progress">In progress</string>
 </resources>
