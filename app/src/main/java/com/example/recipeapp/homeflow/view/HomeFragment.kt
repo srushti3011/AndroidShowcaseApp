@@ -154,6 +154,7 @@ class HomeFragment : Fragment() {
 
     private fun makeInitialApiCall() {
         viewModel.apply {
+            convertCuisinesToInitialState()
             recipeCuisineSet("Indian")
             getNewRecipes(10)
         }

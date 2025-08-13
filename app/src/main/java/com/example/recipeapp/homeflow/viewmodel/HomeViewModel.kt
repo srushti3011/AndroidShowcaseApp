@@ -70,6 +70,16 @@ class HomeViewModel @Inject constructor(
     val newRecipeData: LiveData<List<NewRecipe>>
         get() = mNewRecipeData
 
+    fun convertCuisinesToInitialState() {
+        mCuisines.forEachIndexed { ind, value ->
+            if (ind == 0) {
+                value.isSelected = true
+            } else {
+                value.isSelected = false
+            }
+        }
+    }
+
     fun recipeCuisineSet(cuisine: String) {
         mRecipesPerCuisineApiState.value = Loading()
         viewModelScope.launch {
