@@ -16,6 +16,9 @@
         android:theme="@style/Theme.RecipeApp"
         tools:targetApi="31">
         <activity
+            android:name=".homeflow.view.RecipeSearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".bottomnavigationflow.view.BottomNavigationActivity"
             android:windowSoftInputMode="adjustPan"
             android:exported="false" />

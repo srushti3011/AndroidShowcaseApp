@@ -1,6 +1,7 @@
 package com.example.recipeapp.homeflow.viewmodel
 
 import android.util.Log
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.homeflow.model.Cuisine
 import com.example.recipeapp.homeflow.model.NewRecipe
 import com.example.recipeapp.homeflow.model.RecipePerCuisine
+import com.example.recipeapp.navigation.route.HomeRoute
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
@@ -26,7 +28,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val recipeRepository: RecipeRepository
+    private val recipeRepository: RecipeRepository,
+    private val homeRoute: HomeRoute
 ) : ViewModel() {
 
     private var mCuisines = arrayOf(
@@ -150,5 +153,9 @@ class HomeViewModel @Inject constructor(
             newRecipeUIList.add(newRecipeToBeAdded)
         }
         mNewRecipeData.value = newRecipeUIList
+    }
+
+    fun searchClicked(fragment: Fragment) {
+        homeRoute.toSearch(fragment)
     }
 }

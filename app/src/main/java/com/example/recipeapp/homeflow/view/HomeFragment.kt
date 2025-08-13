@@ -1,6 +1,7 @@
 package com.example.recipeapp.homeflow.view
 
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +51,7 @@ class HomeFragment : Fragment() {
         setupRecipePerCuisineRecyclerView()
         setupNewRecipesRecyclerView()
         setupTryAgainFetching()
+        setupSearchView()
     }
 
     private fun setupCuisineRecyclerView() {
@@ -174,6 +176,13 @@ class HomeFragment : Fragment() {
             btnNewRecipeTryAgain.setOnClickListener {
                 viewModel.getNewRecipes(10)
             }
+        }
+    }
+
+    private fun setupSearchView() {
+        binding.searchViewRecipe.setOnClickListener {
+            Log.i("TAG", "navigate to search screen")
+            viewModel.searchClicked(this)
         }
     }
 }
