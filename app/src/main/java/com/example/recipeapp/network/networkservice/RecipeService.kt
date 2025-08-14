@@ -1,6 +1,7 @@
 package com.example.recipeapp.network.networkservice
 
 import com.example.recipeapp.network.ApiResult
+import com.example.recipeapp.network.networkmodel.ComplexRecipeQueryResponse
 import com.example.recipeapp.network.networkmodel.NewRecipeResponse
 import com.example.recipeapp.network.networkmodel.RecipesPerCuisineResponse
 import retrofit2.http.GET
@@ -17,4 +18,9 @@ interface RecipeService {
     suspend fun getNewRecipes(
         @Query("number") number: Int
     ): ApiResult<NewRecipeResponse>
+
+    @GET("/recipes/complexSearch")
+    suspend fun searchRecipesFor(
+        @Query("query") query: String
+    ): ApiResult<ComplexRecipeQueryResponse>
 }

@@ -1,7 +1,6 @@
 package com.example.recipeapp.homeflow.view
 
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -181,7 +180,9 @@ class HomeFragment : Fragment() {
 
     private fun setupSearchView() {
         binding.searchViewRecipe.setOnClickListener {
-            Log.i("TAG", "navigate to search screen")
+            viewModel.searchClicked(this)
+        }
+        binding.searchViewRecipe.setOnSearchClickListener {
             viewModel.searchClicked(this)
         }
     }

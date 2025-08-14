@@ -1,6 +1,7 @@
 package com.example.recipeapp.network.networkrepository
 
 import com.example.recipeapp.network.ApiResult
+import com.example.recipeapp.network.networkmodel.ComplexRecipeQueryResponse
 import com.example.recipeapp.network.networkmodel.NewRecipeResponse
 import com.example.recipeapp.network.networkmodel.RecipesPerCuisineResponse
 import com.example.recipeapp.network.networkservice.RecipeService
@@ -18,5 +19,9 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun getNewRecipes(number: Int): ApiResult<NewRecipeResponse> {
         return recipeService.getNewRecipes(number)
+    }
+
+    override suspend fun searchRecipesFor(query: String): ApiResult<ComplexRecipeQueryResponse> {
+        return recipeService.searchRecipesFor(query)
     }
 }

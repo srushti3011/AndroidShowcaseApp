@@ -50,4 +50,6 @@
     <string name="hint_search_recipe">Search recipe</string>
     <string name="recent_search">Recent Search</string>
     <string name="sample_searched_count">255 results</string>
+    <string name="search_result">Search Result</string>
+    <string name="search_result_count">%d results</string>
 </resources>

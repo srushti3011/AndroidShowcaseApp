@@ -30,10 +30,12 @@
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            app:cardCornerRadius="10dp"
             android:layout_marginStart="20dp"
-            android:backgroundTint="@color/colorPrimary">
+            android:backgroundTint="@color/colorPrimary"
+            app:cardCornerRadius="10dp">
+
             <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnFilterSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="@android:color/transparent"
@@ -48,12 +50,13 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/searchViewContainer"
-        android:orientation="horizontal">
+        app:layout_constraintTop_toBottomOf="@id/searchViewContainer">
+
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tvRecentSearch"
+            android:id="@+id/tvSearchHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_bold"
@@ -61,33 +64,35 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSearchResultCount"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:fontFamily="@font/poppins_bold"
+            android:fontFamily="@font/poppins_regular"
+            android:gravity="center_vertical"
             android:text="@string/sample_searched_count"
             android:textColor="@color/recipeCardTextGray"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:gravity="center_vertical" />
+            android:textSize="11sp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSearchedRecipes"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="30dp"
+        android:layout_marginStart="23dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="23dp"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/subHeadContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/rv_item_searched_recipe"
-        android:layout_marginBottom="0dp"/>
+        tools:listitem="@layout/rv_item_searched_recipe" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
