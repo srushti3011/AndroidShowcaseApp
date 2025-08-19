@@ -8,5 +8,9 @@ import com.example.recipeapp.network.networkmodel.RecipesPerCuisineResponse
 interface RecipeRepository {
     suspend fun getRecipesPerCuisine(cuisine: String): ApiResult<RecipesPerCuisineResponse>
     suspend fun getNewRecipes(number: Int): ApiResult<NewRecipeResponse>
-    suspend fun searchRecipesFor(query: String): ApiResult<ComplexRecipeQueryResponse>
+    suspend fun searchRecipesFor(
+        query: String,
+        diet: List<String>? = null,
+        type: List<String>? = null
+    ): ApiResult<ComplexRecipeQueryResponse>
 }

@@ -8,12 +8,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.recipeapp.BaseActivity
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.ActivityRecipeSearchBinding
 import com.example.recipeapp.homeflow.viewmodel.RecipeSearchViewModel
@@ -22,10 +22,11 @@ import com.example.recipeapp.network.Idle
 import com.example.recipeapp.network.Loading
 import com.example.recipeapp.network.Success
 import com.example.recipeapp.savedrecipeflow.view.SearchedRecipeAdapter
+import com.example.recipeapp.util.helpers.RecyclerViewState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RecipeSearchActivity : AppCompatActivity() {
+class RecipeSearchActivity : BaseActivity() {
 
     private lateinit var binding: ActivityRecipeSearchBinding
     private val viewModel: RecipeSearchViewModel by viewModels()
@@ -41,7 +42,6 @@ class RecipeSearchActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         setupUI()
         setupObservers()
     }
@@ -54,10 +54,10 @@ class RecipeSearchActivity : AppCompatActivity() {
 
     private fun setupSearchRecyclerView() {
         adapter.changeData(
-            viewModel.recentSearchRecipes
+            RecyclerViewState.Success(viewModel.recentSearchRecipes)
         )
         binding.rvSearchedRecipes.apply {
-            adapter = adapter
+            adapter = this@RecipeSearchActivity.adapter
             layoutManager = GridLayoutManager(
                 this@RecipeSearchActivity,
                 2,
@@ -70,10 +70,17 @@ class RecipeSearchActivity : AppCompatActivity() {
     private fun setupSearchView() {
         binding.searchView.setOnQueryTextListener(object: OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.apply {
+                    cardViewFailedToLoadRecipes.visibility = View.GONE
+                    cardViewNoRecipeFound.visibility = View.GONE
+                }
                 if (!query.isNullOrEmpty()) {
+                    currentFocus?.clearFocus()
                     viewModel.getRecipesFor(query)
                 } else {
-                    adapter.changeData(viewModel.recentSearchRecipes)
+                    adapter.changeData(
+                        RecyclerViewState.Success(viewModel.recentSearchRecipes)
+                    )
                     binding.apply {
                         tvSearchHeading.text = ContextCompat.getString(
                             this@RecipeSearchActivity,
@@ -86,10 +93,16 @@ class RecipeSearchActivity : AppCompatActivity() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                binding.apply {
+                    cardViewFailedToLoadRecipes.visibility = View.GONE
+                    cardViewNoRecipeFound.visibility = View.GONE
+                }
                 if (!newText.isNullOrEmpty()) {
                     viewModel.getRecipesFor(newText)
                 } else {
-                    adapter.changeData(viewModel.recentSearchRecipes)
+                    adapter.changeData(
+                        RecyclerViewState.Success(viewModel.recentSearchRecipes)
+                    )
                     binding.apply {
                         tvSearchHeading.text = ContextCompat.getString(
                             this@RecipeSearchActivity,
@@ -101,12 +114,14 @@ class RecipeSearchActivity : AppCompatActivity() {
                 return true
             }
         })
-        openKeyboard()
+//        openKeyboard()
     }
 
     private fun setupFilter() {
         binding.btnFilterSearch.setOnClickListener {
             Log.i("TAG", "filter button clicked")
+            val filterSheet = FilterSheetFragment()
+            filterSheet.show(supportFragmentManager, "FilterSheet")
         }
     }
 
@@ -115,13 +130,23 @@ class RecipeSearchActivity : AppCompatActivity() {
             when (it) {
                 is ErrorState -> {
                     Log.i("TAG", "Error ${it.error}")
+                    binding.apply {
+                        cardViewFailedToLoadRecipes.visibility = View.VISIBLE
+                        cardViewNoRecipeFound.visibility = View.GONE
+                    }
                 }
                 is Idle -> {}
                 is Loading -> {
-                    // TODO: Change adapter to Loading adapter
+                    binding.apply {
+                        cardViewFailedToLoadRecipes.visibility = View.GONE
+                        cardViewNoRecipeFound.visibility = View.GONE
+                    }
+                    adapter.changeData(RecyclerViewState.Loading())
                 }
                 is Success -> {
                     binding.apply {
+                        cardViewFailedToLoadRecipes.visibility = View.GONE
+
                         tvSearchHeading.text = ContextCompat.getString(
                             this@RecipeSearchActivity,
                             R.string.search_result
@@ -134,8 +159,19 @@ class RecipeSearchActivity : AppCompatActivity() {
                             )
                         }
                     }
-                    adapter.changeData(it.response.results)
                 }
+            }
+        }
+
+        viewModel.searchedRecipesUIModel.observe(this) {
+            adapter.changeData(RecyclerViewState.Success(it))
+        }
+
+        viewModel.isRecipeFound.observe(this) {
+            if (it) {
+                binding.cardViewNoRecipeFound.visibility = View.GONE
+            } else {
+                binding.cardViewNoRecipeFound.visibility = View.VISIBLE
             }
         }
     }

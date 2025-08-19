@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.homeflow.model.SearchedRecipe
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
 import com.example.recipeapp.network.Loading
@@ -29,73 +30,79 @@ class RecipeSearchViewModel @Inject constructor(
     private var previousSearchRecipeJob: Job? = null
 
     private var mRecentSearchRecipes = listOf(
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 715415,
             title = "Red Lentil Soup with Chicken and Turnips",
-            image = "https://img.spoonacular.com/recipes/715415-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/715415-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 714606,
             title = "Asparagus and Pea Soup: Real Convenience Food",
-            image = "https://img.spoonacular.com/recipes/716406-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/716406-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 644387,
             title = "Garlicky Kale",
-            image = "https://img.spoonacular.com/recipes/644387-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/644387-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 715446,
             title = "Slow Cooker Beef Stew",
-            image = "https://img.spoonacular.com/recipes/715446-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/715446-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 782601,
             title = "Red Kidney Bean Jambalaya",
-            image = "https://img.spoonacular.com/recipes/782601-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/782601-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 716426,
             title = "Cauliflower, Brown Rice, and Vegetable Fried Rice",
-            image = "https://img.spoonacular.com/recipes/716426-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/716426-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 716004,
             title = "Quinoa and Chickpea Salad with Sun-Dried Tomatoes and Dried Cherries",
-            image = "https://img.spoonacular.com/recipes/716004-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/716004-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 716627,
             title = "Easy Homemade Rice and Beans",
-            image = "https://img.spoonacular.com/recipes/716627-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/716627-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 664147,
             title = "Tuscan White Bean Soup with Olive Oil and Rosemary",
-            image = "https://img.spoonacular.com/recipes/664147-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/664147-312x231.jpg"
         ),
-        ComplexQueryResponseSingleRecipe(
+        SearchedRecipe(
             id = 640941,
             title = "Crunchy Brussels Sprouts Side Dish",
-            image = "https://img.spoonacular.com/recipes/640941-312x231.jpg",
-            imageType = "jpg"
+            image = "https://img.spoonacular.com/recipes/640941-312x231.jpg"
         )
     )
-    val recentSearchRecipes: List<ComplexQueryResponseSingleRecipe>
+    val recentSearchRecipes: List<SearchedRecipe>
         get() = mRecentSearchRecipes
 
     private var mSearchRecipeApiState = MutableLiveData<ApiState<ComplexRecipeQueryResponse>>()
     val searchRecipeApiState: LiveData<ApiState<ComplexRecipeQueryResponse>>
         get() = mSearchRecipeApiState
+
+    private var mSearchedRecipeUIModel = MutableLiveData<List<SearchedRecipe>>()
+    val searchedRecipesUIModel: LiveData<List<SearchedRecipe>>
+        get() = mSearchedRecipeUIModel
+
+    private var mIsRecipeFound = MutableLiveData<Boolean>()
+    val isRecipeFound: LiveData<Boolean>
+        get() = mIsRecipeFound
+
+    private var mDietTypeFilter = MutableLiveData<MutableList<String>>()
+    val dietTypeFilter: LiveData<MutableList<String>>
+        get() = mDietTypeFilter
+
+    private var mMealTypeFilter = MutableLiveData<MutableList<String>>()
+    val mealTypeFilter: LiveData<MutableList<String>>
+        get() = mMealTypeFilter
 
     fun getRecipesFor(query: String) {
         cancelJob()
@@ -105,6 +112,11 @@ class RecipeSearchViewModel @Inject constructor(
             recipeRepository.searchRecipesFor(query)
                 .onSuccess {
                     mSearchRecipeApiState.value = Success(it)
+                    if (it.results.size == 0) {
+                        mIsRecipeFound.value = false
+                    } else {
+                        mSearchedRecipeUIModel.value = convertSearchedDataToUIModel(it.results)
+                    }
                 }
                 .onException {
                     it.localizedMessage?.let { it1 -> Log.i("TAG", it1) }
@@ -117,5 +129,37 @@ class RecipeSearchViewModel @Inject constructor(
 
     private fun cancelJob() {
         previousSearchRecipeJob?.cancel()
+    }
+
+    private fun convertSearchedDataToUIModel(
+        dataFromApi: List<ComplexQueryResponseSingleRecipe>
+    ): List<SearchedRecipe> {
+        val uiModel = mutableListOf<SearchedRecipe>()
+        dataFromApi.forEach {
+            val recipeToBeAdded = SearchedRecipe(
+                id = it.id,
+                title = it.title,
+                image = it.image,
+                isLoading = false
+            )
+            uiModel.add(recipeToBeAdded)
+        }
+        return uiModel
+    }
+
+    private fun addDietType(dietType: String) {
+        mDietTypeFilter.value?.add(dietType)
+    }
+
+    private fun removeDietType(dietType: String) {
+        mDietTypeFilter.value?.remove(dietType)
+    }
+
+    private fun addMealType(mealType: String) {
+        mDietTypeFilter.value?.add(mealType)
+    }
+
+    private fun removeMealType(mealType: String) {
+        mDietTypeFilter.value?.remove(mealType)
     }
 }

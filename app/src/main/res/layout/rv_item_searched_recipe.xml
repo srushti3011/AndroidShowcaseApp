@@ -83,5 +83,10 @@
                     android:textSize="11sp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/loadingShimmerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
     </androidx.cardview.widget.CardView>
 </FrameLayout>

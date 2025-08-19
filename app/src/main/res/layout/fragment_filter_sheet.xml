@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    tools:context=".homeflow.view.FilterSheetFragment">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvFilterSearchHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="@string/filter_search"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="21sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDietTypeHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/filter_search_diet_type"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvFilterSearchHeading" />
+
+    <LinearLayout
+        android:id="@+id/dietTypeFilterHeading"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDietTypeHeading">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDietTypeFilterVeg"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:background="@drawable/btn_filter_selector"
+            android:text="@string/veg"
+            android:textColor="@color/selector_filter_btn_font_color"
+            android:fontFamily="@font/poppins_semibold"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@+id/tvDietTypeHeading" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnDietTypeFilterNonVeg"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:background="@drawable/btn_filter_selector"
+            android:textColor="@color/selector_filter_btn_font_color"
+            android:textAllCaps="false"
+            android:text="@string/non_veg" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvMealTypeHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="30dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="@string/filter_search_meal_type"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dietTypeFilterHeading" />
+    <LinearLayout
+        android:id="@+id/mealTypeContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tvMealTypeHeading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMealTypeFilterMainCourse"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:background="@drawable/btn_filter_selector"
+            android:text="@string/main_course"
+            android:fontFamily="@font/poppins_semibold"
+            android:textAllCaps="false"
+            android:textColor="@color/selector_filter_btn_font_color"
+            app:layout_constraintTop_toBottomOf="@+id/tvDietTypeHeading" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMealTypeFilterBreakfast"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/selector_filter_btn_font_color"
+            android:background="@drawable/btn_filter_selector"
+            android:fontFamily="@font/poppins_semibold"
+            android:textAllCaps="false"
+            android:text="@string/breakfast" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btnMealTypeFilterSideDish"
+            android:layout_width="wrap_content"
+            android:layout_height="27dp"
+            android:textColor="@color/selector_filter_btn_font_color"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:background="@drawable/btn_filter_selector"
+            android:textAllCaps="false"
+            android:text="@string/side_dish" />
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnApplyFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/mealTypeContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="20dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:text="@string/apply_filter"
+        android:fontFamily="@font/poppins_semibold"
+        android:background="@drawable/bg_app_button" />
+</androidx.constraintlayout.widget.ConstraintLayout>

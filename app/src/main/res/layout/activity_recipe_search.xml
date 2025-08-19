@@ -81,8 +81,7 @@
             android:textSize="11sp" />
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvSearchedRecipes"
+    <FrameLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="23dp"
@@ -92,7 +91,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subHeadContainer"
-        tools:listitem="@layout/rv_item_searched_recipe" />
+        app:layout_constraintTop_toBottomOf="@+id/subHeadContainer">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSearchedRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/rv_item_searched_recipe" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewNoRecipeFound"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="20sp"
+                android:text="@string/sorry_no_recipe_found" />
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardViewFailedToLoadRecipes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="20sp"
+                android:text="@string/failed_to_load_recipes" />
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
