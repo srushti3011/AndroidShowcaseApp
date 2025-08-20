@@ -1,11 +1,8 @@
 package com.example.recipeapp.homeflow.view
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
@@ -56,14 +53,17 @@ class RecipeSearchActivity : BaseActivity() {
         adapter.changeData(
             RecyclerViewState.Success(viewModel.recentSearchRecipes)
         )
-        binding.rvSearchedRecipes.apply {
-            adapter = this@RecipeSearchActivity.adapter
-            layoutManager = GridLayoutManager(
-                this@RecipeSearchActivity,
-                2,
-                GridLayoutManager.VERTICAL,
-                false
-            )
+        binding.apply {
+            tvSearchResultCount.visibility = View.GONE
+            rvSearchedRecipes.apply {
+                adapter = this@RecipeSearchActivity.adapter
+                layoutManager = GridLayoutManager(
+                    this@RecipeSearchActivity,
+                    2,
+                    GridLayoutManager.VERTICAL,
+                    false
+                )
+            }
         }
     }
 
@@ -78,15 +78,10 @@ class RecipeSearchActivity : BaseActivity() {
                     currentFocus?.clearFocus()
                     viewModel.getRecipesFor(query)
                 } else {
-                    adapter.changeData(
-                        RecyclerViewState.Success(viewModel.recentSearchRecipes)
-                    )
-                    binding.apply {
-                        tvSearchHeading.text = ContextCompat.getString(
-                            this@RecipeSearchActivity,
-                            R.string.recent_search
-                        )
-                        tvSearchResultCount.visibility = View.GONE
+                    if (viewModel.areFiltersEmpty()) {
+                        switchUIToRecents()
+                    } else {
+                        viewModel.getRecipesFor("")
                     }
                 }
                 return true
@@ -100,27 +95,25 @@ class RecipeSearchActivity : BaseActivity() {
                 if (!newText.isNullOrEmpty()) {
                     viewModel.getRecipesFor(newText)
                 } else {
-                    adapter.changeData(
-                        RecyclerViewState.Success(viewModel.recentSearchRecipes)
-                    )
-                    binding.apply {
-                        tvSearchHeading.text = ContextCompat.getString(
-                            this@RecipeSearchActivity,
-                            R.string.recent_search
-                        )
-                        tvSearchResultCount.visibility = View.GONE
+                    if (viewModel.areFiltersEmpty()) {
+                        switchUIToRecents()
+                    } else {
+                        viewModel.getRecipesFor("")
                     }
                 }
                 return true
             }
         })
-//        openKeyboard()
     }
 
     private fun setupFilter() {
         binding.btnFilterSearch.setOnClickListener {
             Log.i("TAG", "filter button clicked")
-            val filterSheet = FilterSheetFragment()
+            val filterSheet = FilterSheetFragment(
+                currentQuery = binding.searchView.query.toString(),
+            ) {
+                switchUIToRecents()
+            }
             filterSheet.show(supportFragmentManager, "FilterSheet")
         }
     }
@@ -146,7 +139,6 @@ class RecipeSearchActivity : BaseActivity() {
                 is Success -> {
                     binding.apply {
                         cardViewFailedToLoadRecipes.visibility = View.GONE
-
                         tvSearchHeading.text = ContextCompat.getString(
                             this@RecipeSearchActivity,
                             R.string.search_result
@@ -176,15 +168,16 @@ class RecipeSearchActivity : BaseActivity() {
         }
     }
 
-    private fun openKeyboard() {
-        binding.searchView.isIconified = false
-        val searchEditText = binding.searchView.findViewById<EditText>(
-            androidx.appcompat.R.id.search_src_text
+    private fun switchUIToRecents() {
+        adapter.changeData(
+            RecyclerViewState.Success(viewModel.recentSearchRecipes)
         )
-        searchEditText.post {
-            searchEditText.requestFocus()
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(searchEditText, InputMethodManager.SHOW_IMPLICIT)
+        binding.apply {
+            tvSearchHeading.text = ContextCompat.getString(
+                this@RecipeSearchActivity,
+                R.string.recent_search
+            )
+            tvSearchResultCount.visibility = View.GONE
         }
     }
 }

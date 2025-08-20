@@ -22,7 +22,7 @@ interface RecipeService {
     @GET("/recipes/complexSearch")
     suspend fun searchRecipesFor(
         @Query("query") query: String,
-        @Query("diet") diet: List<String>? = null,
-        @Query("type") type: List<String>? = null
+        @Query("diet") diet: String? = null,
+        @Query("type") type: String? = null
     ): ApiResult<ComplexRecipeQueryResponse>
 }

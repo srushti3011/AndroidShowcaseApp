@@ -10,7 +10,7 @@ interface RecipeRepository {
     suspend fun getNewRecipes(number: Int): ApiResult<NewRecipeResponse>
     suspend fun searchRecipesFor(
         query: String,
-        diet: List<String>? = null,
-        type: List<String>? = null
+        diet: String? = null,
+        type: String? = null
     ): ApiResult<ComplexRecipeQueryResponse>
 }

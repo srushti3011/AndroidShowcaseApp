@@ -23,8 +23,8 @@ class RecipeRepositoryImpl @Inject constructor(
 
     override suspend fun searchRecipesFor(
         query: String,
-        diet: List<String>?,
-        type: List<String>?
+        diet: String?,
+        type: String?
     ): ApiResult<ComplexRecipeQueryResponse> {
         return recipeService.searchRecipesFor(query, diet, type)
     }

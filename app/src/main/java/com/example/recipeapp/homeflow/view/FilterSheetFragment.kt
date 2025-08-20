@@ -1,20 +1,25 @@
 package com.example.recipeapp.homeflow.view
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.example.recipeapp.databinding.FragmentFilterSheetBinding
+import com.example.recipeapp.homeflow.model.DietType
+import com.example.recipeapp.homeflow.model.MealType
 import com.example.recipeapp.homeflow.viewmodel.RecipeSearchViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class FilterSheetFragment : BottomSheetDialogFragment() {
+@AndroidEntryPoint
+class FilterSheetFragment(
+    val currentQuery: String,
+    val bringToRecentsState: () -> Unit
+) : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentFilterSheetBinding
-    private val viewModel: RecipeSearchViewModel by viewModels()
+    private val viewModel: RecipeSearchViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,31 +31,65 @@ class FilterSheetFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.dietTypeFilter.value?.forEach {
+            when (it) {
+                DietType.VEG -> {
+                    binding.btnDietTypeFilterVeg.isSelected = true
+                }
+                DietType.VEGAN -> {
+                    binding.btnDietTypeFilterVegan.isSelected = true
+                }
+            }
+        }
+        viewModel.mealTypeFilter.value?.forEach {
+            when (it) {
+                MealType.MAINCOURSE -> {
+                    binding.btnMealTypeFilterMainCourse.isSelected = true
+                }
+                MealType.BREAKFAST -> {
+                    binding.btnMealTypeFilterBreakfast.isSelected = true
+                }
+                MealType.SIDEDISH -> {
+                    binding.btnMealTypeFilterSideDish.isSelected = true
+                }
+            }
+        }
         binding.apply {
             arrayOf(
                 btnDietTypeFilterVeg,
-                btnDietTypeFilterNonVeg,
+                btnDietTypeFilterVegan,
                 btnMealTypeFilterBreakfast,
                 btnMealTypeFilterSideDish,
                 btnMealTypeFilterMainCourse
             ).forEach { btn ->
                 btn.setOnClickListener {
                     it.isSelected = !it.isSelected
+                    if (it == btnDietTypeFilterVegan) {
+                        viewModel.updateDietType(DietType.VEGAN, it.isSelected)
+                    }
+                    if (it == btnDietTypeFilterVeg) {
+                        viewModel.updateDietType(DietType.VEG, it.isSelected)
+                    }
+                    if (it == btnMealTypeFilterBreakfast) {
+                        viewModel.updateMealType(MealType.BREAKFAST, it.isSelected)
+                    }
+                    if (it == btnMealTypeFilterSideDish) {
+                        viewModel.updateMealType(MealType.SIDEDISH, it.isSelected)
+                    }
+                    if (it == btnMealTypeFilterMainCourse) {
+                        viewModel.updateMealType(MealType.MAINCOURSE, it.isSelected)
+                    }
                 }
             }
         }
 
         binding.btnApplyFilter.setOnClickListener {
+            if (currentQuery.isEmpty() && viewModel.areFiltersEmpty()) {
+                bringToRecentsState()
+            } else {
+                viewModel.getRecipesFor(currentQuery)
+            }
             this@FilterSheetFragment.dismiss()
         }
-
-        // TODO: Upon the isSelected value of button, mutate the list in viewmodel;
-        // TODO: After mutating that value upon dismissal of the sheet, make call to the search api
-        // TODO: and then the data reflection would happen in UI state of SearchActivity's recyclerview
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        Toast.makeText(context, "Sheet closed", Toast.LENGTH_SHORT).show()
     }
 }

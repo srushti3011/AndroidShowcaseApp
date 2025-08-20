@@ -59,7 +59,7 @@
     <string name="filter_search_diet_type">Diet type</string>
     <string name="filter_search_meal_type">Meal type</string>
     <string name="veg">Veg</string>
-    <string name="non_veg">Non-veg</string>
+    <string name="vegan">Vegan</string>
     <string name="main_course">Main course</string>
     <string name="breakfast">Breakfast</string>
     <string name="side_dish">Side dish</string>

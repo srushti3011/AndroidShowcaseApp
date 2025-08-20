@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.recipeapp.homeflow.model.DietType
+import com.example.recipeapp.homeflow.model.MealType
 import com.example.recipeapp.homeflow.model.SearchedRecipe
 import com.example.recipeapp.network.ApiState
 import com.example.recipeapp.network.ErrorState
@@ -96,23 +98,33 @@ class RecipeSearchViewModel @Inject constructor(
     val isRecipeFound: LiveData<Boolean>
         get() = mIsRecipeFound
 
-    private var mDietTypeFilter = MutableLiveData<MutableList<String>>()
-    val dietTypeFilter: LiveData<MutableList<String>>
+    private var mDietTypeFilter = MutableLiveData<MutableSet<DietType>>()
+    val dietTypeFilter: LiveData<MutableSet<DietType>>
         get() = mDietTypeFilter
 
-    private var mMealTypeFilter = MutableLiveData<MutableList<String>>()
-    val mealTypeFilter: LiveData<MutableList<String>>
+    private var mMealTypeFilter = MutableLiveData<MutableSet<MealType>>()
+    val mealTypeFilter: LiveData<MutableSet<MealType>>
         get() = mMealTypeFilter
+
+    init {
+        mDietTypeFilter.value = mutableSetOf()
+        mMealTypeFilter.value = mutableSetOf()
+    }
 
     fun getRecipesFor(query: String) {
         cancelJob()
         previousSearchRecipeJob = viewModelScope.launch {
             delay(500)
             mSearchRecipeApiState.value = Loading()
-            recipeRepository.searchRecipesFor(query)
+            Log.d("Filters", "Diet: ${computeDietType()}, Type: ${computeMealType()}")
+            recipeRepository.searchRecipesFor(
+                query = query,
+                diet = computeDietType(),
+                type = computeMealType()
+            )
                 .onSuccess {
                     mSearchRecipeApiState.value = Success(it)
-                    if (it.results.size == 0) {
+                    if (it.results.isEmpty()) {
                         mIsRecipeFound.value = false
                     } else {
                         mSearchedRecipeUIModel.value = convertSearchedDataToUIModel(it.results)
@@ -147,19 +159,33 @@ class RecipeSearchViewModel @Inject constructor(
         return uiModel
     }
 
-    private fun addDietType(dietType: String) {
-        mDietTypeFilter.value?.add(dietType)
+    fun updateDietType(dietType: DietType, isSelected: Boolean) {
+        if (isSelected) {
+            mDietTypeFilter.value?.add(dietType)
+        } else {
+            mDietTypeFilter.value?.remove(dietType)
+        }
     }
 
-    private fun removeDietType(dietType: String) {
-        mDietTypeFilter.value?.remove(dietType)
+    fun updateMealType(mealType: MealType, isSelected: Boolean) {
+        if (isSelected) {
+            mMealTypeFilter.value?.add(mealType)
+        } else {
+            mMealTypeFilter.value?.remove(mealType)
+        }
     }
 
-    private fun addMealType(mealType: String) {
-        mDietTypeFilter.value?.add(mealType)
+    private fun computeMealType(): String? {
+        return mMealTypeFilter.value?.takeIf { it.isNotEmpty() }
+            ?.joinToString(",") { it.toString().lowercase() }
     }
 
-    private fun removeMealType(mealType: String) {
-        mDietTypeFilter.value?.remove(mealType)
+    private fun computeDietType(): String? {
+        return mDietTypeFilter.value?.takeIf { it.isNotEmpty() }
+            ?.joinToString(",") { it.toString().lowercase() }
+    }
+
+    fun areFiltersEmpty(): Boolean {
+        return mDietTypeFilter.value.isNullOrEmpty() && mMealTypeFilter.value.isNullOrEmpty()
     }
 }

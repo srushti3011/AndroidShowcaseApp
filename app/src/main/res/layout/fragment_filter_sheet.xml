@@ -52,22 +52,22 @@
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:background="@drawable/btn_filter_selector"
-            android:text="@string/veg"
-            android:textColor="@color/selector_filter_btn_font_color"
             android:fontFamily="@font/poppins_semibold"
+            android:text="@string/veg"
             android:textAllCaps="false"
+            android:textColor="@color/selector_filter_btn_font_color"
             app:layout_constraintTop_toBottomOf="@+id/tvDietTypeHeading" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnDietTypeFilterNonVeg"
+            android:id="@+id/btnDietTypeFilterVegan"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/poppins_semibold"
             android:background="@drawable/btn_filter_selector"
-            android:textColor="@color/selector_filter_btn_font_color"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="@string/vegan"
             android:textAllCaps="false"
-            android:text="@string/non_veg" />
+            android:textColor="@color/selector_filter_btn_font_color" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -84,23 +84,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dietTypeFilterHeading" />
+
     <LinearLayout
         android:id="@+id/mealTypeContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tvMealTypeHeading"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="30dp">
+        android:layout_marginEnd="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvMealTypeHeading">
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnMealTypeFilterMainCourse"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:background="@drawable/btn_filter_selector"
-            android:text="@string/main_course"
             android:fontFamily="@font/poppins_semibold"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="@string/main_course"
             android:textAllCaps="false"
             android:textColor="@color/selector_filter_btn_font_color"
             app:layout_constraintTop_toBottomOf="@+id/tvDietTypeHeading" />
@@ -110,39 +114,39 @@
             android:layout_width="wrap_content"
             android:layout_height="27dp"
             android:layout_marginStart="10dp"
-            android:textColor="@color/selector_filter_btn_font_color"
             android:background="@drawable/btn_filter_selector"
             android:fontFamily="@font/poppins_semibold"
+            android:text="@string/breakfast"
             android:textAllCaps="false"
-            android:text="@string/breakfast" />
+            android:textColor="@color/selector_filter_btn_font_color" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnMealTypeFilterSideDish"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
-            android:textColor="@color/selector_filter_btn_font_color"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/poppins_semibold"
             android:background="@drawable/btn_filter_selector"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="@string/side_dish"
             android:textAllCaps="false"
-            android:text="@string/side_dish" />
+            android:textColor="@color/selector_filter_btn_font_color" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnApplyFilter"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/mealTypeContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:textAllCaps="false"
-        android:text="@string/apply_filter"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/bg_app_button"
         android:fontFamily="@font/poppins_semibold"
-        android:background="@drawable/bg_app_button" />
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:text="@string/apply_filter"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mealTypeContainer" />
 </androidx.constraintlayout.widget.ConstraintLayout>
